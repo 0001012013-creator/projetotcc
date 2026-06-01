@@ -1,0 +1,148 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+
+```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EduHub - Login</title>
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+```
+
+</head>
+
+<body>
+
+```
+<!-- PERSONAGEM 3D -->
+
+<div class="illustration-side">
+
+    <img
+        src="{% static 'img/student.png' %}"
+        alt="Aluno EduHub"
+        class="student-image"
+    >
+
+</div>
+
+<!-- FORMULÁRIO -->
+
+<main>
+
+    <div class="logo-container">
+
+    <img
+        src="{% static 'img/logo.png' %}"
+        alt="Logo EduHub"
+        class="logo"
+    >
+    </div>
+
+    <h1>EduHub</h1>
+
+    <p class="subtitle">
+        Sistema Inteligente de Gestão Escolar
+    </p>
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert">
+
+                {{ message }}
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+            <label for="email">
+
+                E-mail
+
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="eduardo@aluno.com"
+                required
+            >
+
+        </div>
+
+        <!-- SENHA -->
+
+        <div class="form-group">
+
+            <label for="password">
+
+                Senha
+
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Digite sua senha"
+                required
+            >
+
+        </div>
+
+        <!-- BOTÃO -->
+
+        <button type="submit" class="btn-submit">
+
+            Entrar
+
+        </button>
+
+    </form>
+
+    <!-- RECUPERAÇÃO DE SENHA -->
+
+    <div class="footer-links">
+
+        <a href="#">
+        Esqueci minha senha
+        </a>
+
+    </div>
+
+    <!-- INFORMAÇÃO -->
+
+    <div class="access-info">
+
+        O acesso será direcionado automaticamente
+        conforme o perfil do usuário.
+
+    </div>
+
+</main>
+
+<script src="{% static 'js/login.js' %}"></script>
+```
+
+</body>
+
+</html>

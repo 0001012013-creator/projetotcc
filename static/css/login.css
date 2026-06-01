@@ -1,0 +1,293 @@
+:root {
+--navy: #071a52;
+--blue: #1565f5;
+--blue-line: #3ea6ff;
+--white: #ffffff;
+--white-70: rgba(255,255,255,.70);
+--white-40: rgba(255,255,255,.40);
+}
+
+*,
+*::before,
+*::after{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+font-family:'DM Sans', sans-serif;
+background:var(--navy);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+position:relative;
+}
+
+/* ONDA AZUL */
+
+body::after{
+content:'';
+position:fixed;
+bottom:-10%;
+right:-6%;
+width:54vw;
+height:90vh;
+background:var(--blue);
+border-radius:60% 0 0 40% / 55% 0 0 50%;
+z-index:0;
+pointer-events:none;
+box-shadow:
+inset -40px -40px 80px rgba(0,0,0,.18),
+inset 30px 30px 60px rgba(255,255,255,.06);
+}
+
+/* LOGIN */
+
+main{
+position:relative;
+z-index:1;
+
+width:100%;
+max-width:520px;
+
+padding:60px 72px;
+
+margin-right:auto;
+margin-left:5vw;
+
+animation:slideIn .5s ease both;
+}
+
+@keyframes slideIn{
+from{
+opacity:0;
+transform:translateX(-20px);
+}
+to{
+opacity:1;
+transform:translateX(0);
+}
+}
+
+.logo-container{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.logo{
+    width:90px;
+    height:auto;
+}
+
+h1{
+font-family:'Playfair Display', serif;
+font-size:52px;
+font-weight:700;
+color:var(--white);
+letter-spacing:-.5px;
+margin-bottom:10px;
+line-height:1.1;
+}
+
+.subtitle{
+color:var(--white-70);
+margin-bottom:35px;
+font-size:15px;
+}
+
+form{
+display:flex;
+flex-direction:column;
+}
+
+.form-group{
+position:relative;
+margin-bottom:34px;
+}
+
+.form-group label{
+display:block;
+font-size:15px;
+font-weight:700;
+color:var(--white);
+margin-bottom:10px;
+letter-spacing:.02em;
+}
+
+.form-group input{
+width:100%;
+background:transparent;
+border:none;
+border-bottom:1.5px solid var(--white-40);
+outline:none;
+padding:6px 0 10px;
+font-family:'DM Sans', sans-serif;
+font-size:15px;
+color:var(--white);
+transition:border-color .25s ease;
+caret-color:var(--blue-line);
+}
+
+.form-group input::placeholder{
+color:var(--white-40);
+}
+
+.form-group input:focus{
+color:var(--white);
+}
+
+.form-group::after{
+content:'';
+position:absolute;
+bottom:0;
+left:0;
+width:0;
+height:2px;
+background:var(--blue-line);
+transition:width .3s ease;
+border-radius:2px;
+}
+
+.form-group:focus-within::after{
+width:100%;
+}
+
+.form-group:focus-within input{
+border-color:transparent;
+}
+
+/* ALERTAS DJANGO */
+
+.alert{
+background:rgba(255,255,255,.10);
+border-left:4px solid var(--blue-line);
+color:var(--white);
+padding:12px;
+border-radius:8px;
+margin-bottom:20px;
+font-size:14px;
+}
+
+/* BOTÃO */
+
+.btn-submit{
+width:100%;
+padding:17px;
+background:var(--blue);
+border:none;
+border-radius:10px;
+font-family:'DM Sans', sans-serif;
+font-size:16px;
+font-weight:700;
+color:var(--white);
+letter-spacing:.5px;
+cursor:pointer;
+margin-top:8px;
+transition:all .2s ease;
+box-shadow:0 6px 20px rgba(21,101,245,.45);
+}
+
+.btn-submit:hover{
+background:#0f52d9;
+box-shadow:0 8px 26px rgba(21,101,245,.6);
+transform:translateY(-1px);
+}
+
+.btn-submit:active{
+transform:translateY(0);
+}
+
+/* LINKS */
+
+.footer-links{
+margin-top:22px;
+text-align:center;
+}
+
+.footer-links a{
+font-size:14px;
+color:var(--white-70);
+text-decoration:none;
+transition:color .2s ease;
+}
+
+.footer-links a:hover{
+color:var(--white);
+}
+
+.access-info{
+margin-top:18px;
+text-align:center;
+color:var(--white-40);
+font-size:13px;
+}
+
+/* PERSONAGEM */
+
+.illustration-side{
+position:absolute;
+right:3%;
+bottom:0;
+width:45%;
+display:flex;
+justify-content:center;
+align-items:flex-end;
+z-index:2;
+}
+
+.student-image{
+width:100%;
+max-width:580px;
+object-fit:contain;
+animation:floating 4s ease-in-out infinite;
+filter:drop-shadow(0 20px 40px rgba(0,0,0,.35));
+}
+
+@keyframes floating{
+0%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-12px);
+}
+
+100%{
+transform:translateY(0);
+}
+}
+
+/* RESPONSIVO */
+
+@media(max-width:900px){
+
+.illustration-side{
+display:none;
+}
+
+main{
+margin-left:0;
+max-width:100%;
+padding:50px 35px;
+}
+
+}
+
+@media(max-width:640px){
+
+body::after{
+width:100vw;
+height:40vh;
+bottom:0;
+right:0;
+border-radius:60% 60% 0 0 / 30% 30% 0 0;
+}
+
+h1{
+font-size:38px;
+}
+
+}
