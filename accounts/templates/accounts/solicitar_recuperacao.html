@@ -13,11 +13,18 @@
         receba a solicitação.
     </p>
 
-    <form>
+    {% if sucesso %}
+        <p>{{ sucesso }}</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
 
         <input
             type="email"
+            name="email"
             placeholder="Digite seu e-mail"
+            required
         >
 
         <button type="submit">

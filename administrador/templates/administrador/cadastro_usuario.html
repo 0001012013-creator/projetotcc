@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cadastrar Usuário</title>
+
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Cadastrar Usuário</h1>
+            <p>Cadastro de administradores, alunos e professores</p>
+        </div>
+
+        <a href="{% url 'core:admin_dashboard' %}" class="btn btn-ghost">
+            Voltar
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <form method="POST"
+              action="{% url 'core:cadastrar_usuario' %}">
+
+            {% csrf_token %}
+
+            <div class="grid-2">
+
+                <div class="field col-span-2">
+                    <label>Nome Completo</label>
+                    <input type="text"
+                           name="first_name"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label>E-mail</label>
+                    <input type="email"
+                           name="email"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label>Perfil</label>
+
+                    <select name="tipo_usuario" required>
+
+                        <option value="">
+                            Selecione
+                        </option>
+
+                        <option value="admin">
+                            Administrador
+                        </option>
+
+                        <option value="aluno">
+                            Aluno
+                        </option>
+
+                        <option value="professor">
+                            Professor
+                        </option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="btn-row">
+
+                <button type="reset"
+                        class="btn btn-ghost">
+                    Limpar
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Cadastrar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

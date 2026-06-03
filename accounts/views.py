@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from .models import SolicitacaoRecuperacao
 
 
 def login_view(request):
@@ -48,6 +49,23 @@ def logout_view(request):
 
 
 def solicitar_recuperacao(request):
+
+    if request.method == 'POST':
+
+        email = request.POST.get('email')
+
+        SolicitacaoRecuperacao.objects.create(
+            email=email
+        )
+
+        return render(
+            request,
+            'accounts/solicitar_recuperacao.html',
+            {
+                'sucesso': 'Solicitação enviada com sucesso!'
+            }
+        )
+
     return render(
         request,
         'accounts/solicitar_recuperacao.html'
