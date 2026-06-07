@@ -11,6 +11,14 @@
 </head>
 <body>
 <div class="container">
+
+  {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success show{% else %}alert-danger show{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
  
   <!-- CABEÇALHO -->
   <div class="header">
@@ -279,5 +287,28 @@
 </div>
  
 <script src="{% static 'js/cadastro.js' %}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const tipo = "{{ tipo_inicial|default:'' }}";
+
+    if (tipo === "admin") {
+        switchTab("admin");
+    }
+
+    if (tipo === "aluno") {
+        switchTab("aluno");
+    }
+
+    if (tipo === "professor") {
+        switchTab("prof");
+    }
+
+});
+</script>
+
+</body>
+</html>
 </body>
 </html>

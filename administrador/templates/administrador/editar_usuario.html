@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Editar Usuário — EduHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}"/>
+</head>
+<body>
+<div class="container">
+
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </div>
+    <div>
+      <h1>Editar Usuário</h1>
+      <p>Editando: <strong>{{ usuario.first_name }}</strong>
+        &nbsp;<span class="badge badge-{{ usuario.user_type }}">{{ usuario.get_user_type_display }}</span>
+      </p>
+    </div>
+    <a href="{% url 'gerenciar_usuarios' %}" class="btn btn-ghost" style="margin-left:auto;">← Voltar</a>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success show{% else %}alert-danger show{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+
+    <!-- FORM começa aqui — enctype obrigatório para enviar arquivo -->
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-panel active">
+
+        <!-- Foto dentro do form -->
+        <p class="form-title">Foto de perfil</p>
+        <div class="foto-section">
+          <div class="foto-circle {% if usuario.foto %}has-foto{% endif %}" id="foto-circle-edit">
+            {% if usuario.foto %}
+              <img src="{{ usuario.foto.url }}" alt="Foto atual"
+                   style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+            {% else %}
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            {% endif %}
+          </div>
+          <div>
+            <label class="btn btn-ghost btn-sm" for="foto-edit" style="cursor:pointer;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Trocar foto
+            </label>
+            <!-- input DENTRO do form -->
+            <input type="file" id="foto-edit" name="foto" accept="image/*"
+                   style="display:none" onchange="previewFoto(this)">
+            <p style="font-size:.75rem;color:var(--text3);margin-top:4px;">JPG ou PNG · máx. 2 MB</p>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <p class="form-title">Dados pessoais</p>
+
+        <div class="grid-2">
+          <div class="field col-span-2">
+            <label>Nome completo <span class="req">*</span></label>
+            <input type="text" name="first_name" value="{{ usuario.first_name }}" required>
+          </div>
+          <div class="field col-span-2">
+            <label>E-mail <span class="req">*</span></label>
+            <input type="email" name="email" value="{{ usuario.email }}" required>
+          </div>
+          <div class="field">
+            <label>Telefone</label>
+            <input type="text" name="telefone" value="{{ usuario.telefone }}" placeholder="(00) 00000-0000">
+          </div>
+          <div class="field">
+            <label>Data de nascimento</label>
+            <input type="date" name="data_nascimento" value="{{ usuario.data_nascimento|date:'Y-m-d' }}">
+          </div>
+          <div class="field col-span-2">
+            <label>Endereço completo</label>
+            <input type="text" name="endereco" value="{{ usuario.endereco }}" placeholder="Rua, número, bairro, cidade, CEP">
+          </div>
+          <div class="field">
+            <label>CPF</label>
+            <input type="text" name="cpf" value="{{ usuario.cpf }}" placeholder="000.000.000-00" maxlength="14">
+          </div>
+        </div>
+
+        {% if usuario.user_type == 'aluno' %}
+        <hr class="divider">
+        <p class="form-title" style="margin-bottom:.75rem;">Dados do Responsável</p>
+        <div class="grid-2">
+          <div class="field col-span-2">
+            <label>Nome do responsável</label>
+            <input type="text" name="responsavel_nome" value="{{ usuario.responsavel_nome }}">
+          </div>
+          <div class="field">
+            <label>Telefone do responsável</label>
+            <input type="text" name="responsavel_tel" value="{{ usuario.responsavel_tel }}" placeholder="(00) 00000-0000">
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="btn-row">
+          <a href="{% url 'gerenciar_usuarios' %}" class="btn btn-ghost">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Salvar alterações</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  function previewFoto(input) {
+    if (!input.files || !input.files[0]) return;
+    const circle = document.getElementById('foto-circle-edit');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      circle.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;';
+      circle.appendChild(img);
+      circle.classList.add('has-foto');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+</script>
+</body>
+</html>

@@ -21,6 +21,7 @@ function previewFoto(input, circleId) {
     circle.innerHTML = '';
     const img = document.createElement('img');
     img.src = e.target.result;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
     circle.appendChild(img);
     circle.classList.add('has-foto');
   };

@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recuperação de Senha — EduHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}"/>
+</head>
+<body>
+<div class="container">
+ 
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Recuperação de Senha</h1>
+      <p>Gerencie as solicitações de redefinição de acesso</p>
+    </div>
+    <a href="{% url 'dashboard_adm' %}" class="btn btn-ghost" style="margin-left:auto;">← Voltar</a>
+  </div>
+ 
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success show{% else %}alert-danger show{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+ 
+  <!-- FILA DE SOLICITAÇÕES -->
+  <div class="card">
+    <div class="list-header">
+      <div>
+        <h2 style="font-size:.95rem;font-weight:600;">Fila de Solicitações</h2>
+        <p style="font-size:.8rem;color:var(--text3);margin-top:2px;">Pendentes de aprovação</p>
+      </div>
+      <!-- Badge com total pendente -->
+      <span class="badge badge-pend" style="font-size:.8rem;padding:5px 12px;">
+        {{ solicitacoes|length }} pendente{{ solicitacoes|length|pluralize }}
+      </span>
+    </div>
+ 
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>E-mail</th>
+          <th>Data</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in solicitacoes %}
+        <tr>
+          <td class="td-mono">{{ s.email }}</td>
+          <td style="color:var(--text2);font-size:.85rem;">{{ s.data_solicitacao }}</td>
+          <td><span class="badge badge-pend">{{ s.get_status_display }}</span></td>
+          <td>
+            <div class="action-row">
+              <a href="{% url 'aprovar_recuperacao' s.id %}" class="btn btn-sm btn-primary">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Aprovar
+              </a>
+              <a href="{% url 'rejeitar_recuperacao' s.id %}" class="btn btn-sm btn-danger-ghost">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+                Rejeitar
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Nenhuma solicitação pendente.
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+ 
+  <!-- HISTÓRICO -->
+  <div class="card">
+    <div class="list-header">
+      <div>
+        <h2 style="font-size:.95rem;font-weight:600;">Histórico</h2>
+        <p style="font-size:.8rem;color:var(--text3);margin-top:2px;">Solicitações já processadas</p>
+      </div>
+    </div>
+ 
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>E-mail</th>
+          <th>Data</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in historico %}
+        <tr>
+          <td class="td-mono">{{ h.email }}</td>
+          <td style="color:var(--text2);font-size:.85rem;">{{ h.data_solicitacao }}</td>
+          <td>
+            {% if h.status == 'aprovado' %}
+              <span class="badge badge-ativo">{{ h.get_status_display }}</span>
+            {% else %}
+              <span class="badge badge-pend">{{ h.get_status_display }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Nenhum histórico ainda.
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+ 
+</div>
+</body>
+</html>
