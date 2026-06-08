@@ -25,7 +25,6 @@
       <h1>Recuperação de Senha</h1>
       <p>Gerencie as solicitações de redefinição de acesso</p>
     </div>
-    <a href="{% url 'dashboard_adm' %}" class="btn btn-ghost" style="margin-left:auto;">← Voltar</a>
   </div>
  
   {% if messages %}
@@ -139,6 +138,14 @@
     </table>
   </div>
  
+</div>
+
+<div class="btn-center">
+
+    <a href="{% url 'dashboard_adm' %}" class="btn btn-ghost">
+        ← Voltar
+    </a>
+
 </div>
 </body>
 </html>

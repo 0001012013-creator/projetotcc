@@ -226,3 +226,9 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
     gap: 10px;
     margin-top: 20px;
 }
+
+.btn-center{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
+}

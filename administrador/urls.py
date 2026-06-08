@@ -56,4 +56,28 @@ path(
     views.rejeitar_recuperacao,
     name='rejeitar_recuperacao'
 ),
+
+path(
+    'turmas/criar/',
+    views.criar_turma,
+    name='criar_turma'
+),
+
+path(
+    'turmas/gerenciar/',
+    views.gerenciar_turmas,
+    name='gerenciar_turmas'
+),
+
+path(
+    'turmas/editar/<int:turma_id>/',
+    views.editar_turma,
+    name='editar_turma'
+),
+
+path(
+    'turmas/excluir/<int:turma_id>/',
+    views.excluir_turma,
+    name='excluir_turma'
+),
 ]

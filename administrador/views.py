@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 import secrets
 from django.contrib.auth.hashers import make_password
-
 from accounts.models import User, SolicitacaoRecuperacao
+from .models import Turma
 
 
 # ─────────────────────────────────────────────
@@ -172,3 +172,150 @@ def rejeitar_recuperacao(request, solicitacao_id):
     messages.warning(request, 'Solicitação rejeitada.')
 
     return redirect('gerenciar_recuperacoes')
+
+# ─────────────────────────────────────────────
+# TURMAS
+# ─────────────────────────────────────────────
+def criar_turma(request):
+
+    professores = User.objects.filter(
+        user_type='professor'
+    )
+
+    alunos = User.objects.filter(
+        user_type='aluno'
+    )
+
+    if request.method == 'POST':
+
+        nome = request.POST.get('nome')
+        descricao = request.POST.get('descricao')
+        professor_id = request.POST.get('professor')
+
+        turma = Turma.objects.create(
+            nome=nome,
+            descricao=descricao
+        )
+
+        # Vincula professor selecionado
+        if professor_id:
+            turma.professor_id = professor_id
+            turma.save()
+
+        # Vincula alunos selecionados
+        alunos_ids = request.POST.getlist('alunos')
+        turma.alunos.set(alunos_ids)
+
+        messages.success(
+            request,
+            'Turma criada com sucesso!'
+        )
+
+        return redirect(
+            'gerenciar_turmas'
+        )
+
+    return render(
+        request,
+        'administrador/criar_turma.html',
+        {
+            'professores': professores,
+            'alunos': alunos
+        }
+    )
+
+# ─────────────────────────────────────────────
+# GERENCIAMENTO DE TURMAS
+# ─────────────────────────────────────────────
+def gerenciar_turmas(request):
+
+    turmas = Turma.objects.all().order_by('nome')
+
+    return render(
+        request,
+        'administrador/gerenciar_turmas.html',
+        {
+            'turmas': turmas
+        }
+    )
+
+
+# ─────────────────────────────────────────────
+# EDITAR TURMA
+# ─────────────────────────────────────────────
+def editar_turma(request, turma_id):
+
+    turma = get_object_or_404(
+        Turma,
+        id=turma_id
+    )
+
+    professores = User.objects.filter(
+        user_type='professor'
+    )
+
+    alunos = User.objects.filter(
+        user_type='aluno'
+    )
+
+    if request.method == 'POST':
+
+        turma.nome = request.POST.get('nome')
+        turma.descricao = request.POST.get('descricao')
+
+        professor_id = request.POST.get(
+            'professor'
+        )
+
+        turma.professor_id = (
+            professor_id
+            if professor_id
+            else None
+        )
+
+        turma.save()
+
+        turma.alunos.set(
+            request.POST.getlist('alunos')
+        )
+
+        messages.success(
+            request,
+            'Turma atualizada com sucesso!'
+        )
+
+        return redirect(
+            'gerenciar_turmas'
+        )
+
+    return render(
+        request,
+        'administrador/editar_turma.html',
+        {
+            'turma': turma,
+            'professores': professores,
+            'alunos': alunos
+        }
+    )
+
+
+# ─────────────────────────────────────────────
+# EXCLUIR TURMA
+# ─────────────────────────────────────────────
+def excluir_turma(request, turma_id):
+
+    turma = get_object_or_404(
+        Turma,
+        id=turma_id
+    )
+
+    turma.delete()
+
+    messages.success(
+        request,
+        'Turma excluída com sucesso!'
+    )
+
+    return redirect(
+        'gerenciar_turmas'
+    )

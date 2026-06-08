@@ -1,0 +1,276 @@
+/* ============================================================
+   EduHub — criar_turma.css
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+  --bg:         #F4F3EF;
+  --surface:    #FFFFFF;
+  --surface2:   #F8F7F3;
+  --border:     #E2E0D8;
+  --text:       #1A1917;
+  --text2:      #6B6960;
+  --text3:      #9B9A94;
+  --accent:     #534AB7;
+  --accent-bg:  #EEEDFE;
+  --accent-mid: #7F77DD;
+  --danger:     #A32D2D;
+  --danger-bg:  #FCEBEB;
+  --radius:     12px;
+  --radius-sm:  8px;
+  --shadow:     0 2px 8px rgba(0,0,0,.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.container { max-width: 1000px; margin: 0 auto; }
+
+/* ── Header ── */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.75rem; gap: 16px;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header-icon {
+  width: 48px; height: 48px; background: var(--accent);
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 4px 14px rgba(83,74,183,.3);
+}
+.header-icon svg { width: 22px; height: 22px; stroke: #fff; }
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--text); letter-spacing: -.03em; line-height: 1.1;
+}
+.page-header p { font-size: .85rem; color: var(--text2); margin-top: 3px; }
+
+/* ── Layout 2 colunas ── */
+.form-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.col-main { display: flex; flex-direction: column; gap: 18px; }
+.col-side  { display: flex; flex-direction: column; }
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 22px 18px;
+  animation: fadeUp .4s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card-alunos { flex: 1; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+
+.card-section-title {
+  font-size: .72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .09em;
+  color: var(--text3); margin-bottom: 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-alunos .card-section-title {
+  padding: 16px 18px 0; margin-bottom: .75rem;
+}
+
+/* ── Campos ── */
+.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+
+label {
+  font-size: .8rem; font-weight: 500;
+  color: var(--text2);
+}
+.req { color: #D85A30; }
+
+input[type="text"],
+textarea {
+  width: 100%; padding: 9px 11px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: inherit; font-size: .875rem; color: var(--text);
+  background: var(--surface); outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="text"]:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(83,74,183,.12);
+}
+input::placeholder, textarea::placeholder { color: var(--text3); }
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.55;
+}
+
+/* ── Select customizado ── */
+.select-wrap { position: relative; }
+.select-wrap select {
+  width: 100%; height: 40px;
+  padding: 0 32px 0 11px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: inherit; font-size: .875rem; color: var(--text);
+  background: var(--surface); outline: none;
+  appearance: none; cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+}
+.select-wrap select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(83,74,183,.12);
+}
+.select-arrow {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; color: var(--text3); pointer-events: none;
+}
+
+/* ── Busca de alunos ── */
+.alunos-search-wrap {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 14px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.alunos-search-wrap svg { width: 14px; height: 14px; color: var(--text3); flex-shrink: 0; }
+.alunos-search {
+  flex: 1; border: none; outline: none;
+  font-family: inherit; font-size: .85rem; color: var(--text);
+  background: transparent;
+}
+.alunos-search::placeholder { color: var(--text3); }
+
+.alunos-count {
+  font-size: .7rem; font-weight: 600;
+  color: var(--accent); background: var(--accent-bg);
+  padding: 2px 8px; border-radius: 20px;
+  text-transform: none; letter-spacing: 0;
+}
+
+/* ── Lista de alunos ── */
+.alunos-box {
+  flex: 1; overflow-y: auto;
+  max-height: 360px;
+  padding: 6px 0;
+}
+.alunos-box::-webkit-scrollbar { width: 4px; }
+.alunos-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Cada aluno é um <label> clicável */
+.aluno-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: background .12s;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.aluno-item:last-child { border-bottom: none; }
+.aluno-item:hover { background: var(--surface2); }
+
+/* Esconde o checkbox nativo */
+.aluno-item input[type="checkbox"] { display: none; }
+
+.aluno-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .72rem; font-weight: 700; color: var(--text2);
+  flex-shrink: 0; transition: all .15s;
+}
+.aluno-nome { flex: 1; font-size: .875rem; color: var(--text); }
+
+/* Ícone de check — aparece quando marcado */
+.aluno-check {
+  width: 14px; height: 14px; color: var(--accent);
+  opacity: 0; transition: opacity .15s;
+}
+
+/* Estado marcado */
+.aluno-item:has(input:checked) { background: var(--accent-bg); }
+.aluno-item:has(input:checked) .aluno-avatar {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.aluno-item:has(input:checked) .aluno-nome { font-weight: 600; color: var(--accent); }
+.aluno-item:has(input:checked) .aluno-check { opacity: 1; }
+
+.alunos-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 2.5rem 1rem; color: var(--text3); font-size: .85rem; text-align: center;
+}
+.alunos-empty svg { width: 32px; height: 32px; stroke: var(--border); }
+
+/* ── Ações ── */
+.form-actions {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 20px;
+  box-shadow: var(--shadow);
+}
+
+.btn-ghost {
+  display: inline-flex; align-items: center;
+  height: 38px; padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-family: inherit; font-size: .875rem; font-weight: 500;
+  color: var(--text2); border: 1px solid var(--border);
+  background: transparent; text-decoration: none; cursor: pointer;
+  transition: all .15s;
+}
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 38px; padding: 0 20px;
+  border-radius: var(--radius-sm);
+  font-family: inherit; font-size: .875rem; font-weight: 600;
+  color: #fff; background: var(--accent);
+  border: none; cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  box-shadow: 0 3px 12px rgba(83,74,183,.35);
+}
+.btn-primary svg { width: 14px; height: 14px; }
+.btn-primary:hover {
+  background: #463fa0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(83,74,183,.45);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* opcional */
+}
+/* ── Responsivo ── */
+@media (max-width: 760px) {
+  .form-layout { grid-template-columns: 1fr; }
+  .alunos-box  { max-height: 260px; }
+  .page-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Alertas Django (usados no editar) ── */
+.alert-msg {
+  display: flex; align-items: center;
+  padding: 11px 16px; border-radius: var(--radius-sm);
+  font-size: .85rem; font-weight: 500;
+  margin-bottom: 1.25rem;
+}
+.alert-success { background: #EAF3DE; color: #3B6D11; border: 1px solid #C0DD97; }
+.alert-danger  { background: var(--danger-bg); color: var(--danger); border: 1px solid #F7C1C1; }
