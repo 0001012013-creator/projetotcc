@@ -23,6 +23,11 @@ urlpatterns = [
     path(
         'dashboard-professor/',
         include('professor.urls')
+    ),
+
+    path(
+    'dashboard-aluno/',
+    include('aluno.urls')
 ),
 ]
 

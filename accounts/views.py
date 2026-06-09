@@ -37,9 +37,9 @@ def login_view(request):
             elif user.user_type == 'professor':
                 return redirect('dashboard_professor')
 
-            # ALUNO (temporário)
+            # ALUNO
             elif user.user_type == 'aluno':
-                return redirect('dashboard_adm')
+                return redirect('dashboard_aluno')
 
             # PADRÃO
             return redirect('dashboard_adm')
