@@ -5,7 +5,7 @@ from .models import SolicitacaoRecuperacao
 
 def login_view(request):
 
-    # 🔍 DEBUG (VER O QUE REALMENTE ESTÁ CHEGANDO)
+    # 🔍 DEBUG
     print("METHOD:", request.method)
     print("POST DATA:", request.POST)
 
@@ -26,21 +26,38 @@ def login_view(request):
         print("USER AUTENTICADO:", user)
 
         if user is not None:
+
             login(request, user)
 
-            # ADMIN
+            # ADMINISTRADOR
             if user.is_superuser:
                 return redirect('dashboard_adm')
 
-            # fallback
+            # PROFESSOR
+            elif user.user_type == 'professor':
+                return redirect('dashboard_professor')
+
+            # ALUNO (temporário)
+            elif user.user_type == 'aluno':
+                return redirect('dashboard_adm')
+
+            # PADRÃO
             return redirect('dashboard_adm')
 
         else:
-            return render(request, 'accounts/login.html', {
-                'error': 'Usuário ou senha inválidos'
-            })
 
-    return render(request, 'accounts/login.html')
+            return render(
+                request,
+                'accounts/login.html',
+                {
+                    'error': 'Usuário ou senha inválidos'
+                }
+            )
+
+    return render(
+        request,
+        'accounts/login.html'
+    )
 
 
 def logout_view(request):

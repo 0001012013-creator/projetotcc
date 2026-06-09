@@ -19,6 +19,11 @@ urlpatterns = [
         'admin-django/',
         admin.site.urls
     ),
+
+    path(
+        'dashboard-professor/',
+        include('professor.urls')
+),
 ]
 
 # Serve arquivos de mídia (fotos dos usuários)

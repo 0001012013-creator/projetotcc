@@ -1,0 +1,24 @@
+{% for turma in turmas %}
+
+<div style="border:1px solid #ccc;padding:15px;margin:10px;">
+
+    <h3>{{ turma.nome }}</h3>
+
+    <p>{{ turma.descricao }}</p>
+
+    <p>
+        Alunos:
+        {{ turma.alunos.count }}
+    </p>
+
+    <a href="{% url 'detalhe_turma' turma.id %}">
+        Abrir Turma
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>Você ainda não possui turmas cadastradas.</p>
+
+{% endfor %}

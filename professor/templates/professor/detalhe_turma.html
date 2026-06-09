@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>{{ turma.nome }}</title>
+</head>
+<body>
+
+<h1>{{ turma.nome }}</h1>
+
+<p>
+    {{ turma.descricao }}
+</p>
+
+<hr>
+
+<h2>Professor</h2>
+
+<p>
+    {{ turma.professor.first_name }}
+</p>
+
+<hr>
+
+<h2>Alunos</h2>
+
+{% for aluno in turma.alunos.all %}
+
+<div style="margin-bottom:10px;">
+
+    {% if aluno.foto %}
+        <img
+            src="{{ aluno.foto.url }}"
+            width="40"
+            height="40"
+            style="border-radius:50%; object-fit:cover;"
+        >
+    {% endif %}
+
+    {{ aluno.first_name }}
+
+</div>
+
+{% empty %}
+
+<p>Nenhum aluno nesta turma.</p>
+
+{% endfor %}
+
+<hr>
+
+<h2>Atividades</h2>
+
+{% for atividade in atividades %}
+
+<div
+    style="
+        border:1px solid #ddd;
+        padding:15px;
+        margin-bottom:10px;
+        border-radius:8px;
+    "
+>
+
+    <h3>{{ atividade.titulo }}</h3>
+
+    <p>
+        {{ atividade.descricao }}
+    </p>
+
+    <small>
+        Entrega:
+        {{ atividade.data_entrega }}
+    </small>
+
+    <br><br>
+
+    <a href="{% url 'gerenciar_criterios' atividade.id %}">
+        Gerenciar Critérios
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>
+    Nenhuma atividade cadastrada.
+</p>
+
+{% endfor %}
+
+<hr>
+
+<a href="{% url 'criar_atividade' turma.id %}">
+    Nova Atividade
+</a>
+
+<br><br>
+
+<a href="{% url 'dashboard_professor' %}">
+    ← Voltar
+</a>
+
+</body>
+</html>
