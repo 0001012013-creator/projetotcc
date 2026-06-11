@@ -27,4 +27,10 @@ path(
     name='gerenciar_criterios'
 ),
 
+path(
+    'atividade/<int:atividade_id>/',
+    views.detalhe_atividade,
+    name='detalhe_atividade'
+),
+
 ]

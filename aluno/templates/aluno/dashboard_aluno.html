@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Painel do Aluno</title>
+<title>Minhas Turmas</title>
 </head>
 <body>
 
@@ -10,24 +10,24 @@
 
 {% for turma in turmas %}
 
-<div style="
-    border:1px solid #ddd;
-    padding:15px;
-    margin-bottom:10px;
-">
+<div>
 
     <h3>{{ turma.nome }}</h3>
 
-    <p>
-        {{ turma.descricao }}
-    </p>
+    <p>{{ turma.descricao }}</p>
+
+    <a href="{% url 'detalhe_turma_aluno' turma.id %}">
+        Entrar na Turma
+    </a>
 
 </div>
+
+<hr>
 
 {% empty %}
 
 <p>
-    Você ainda não está matriculado em nenhuma turma.
+    Nenhuma turma encontrada.
 </p>
 
 {% endfor %}

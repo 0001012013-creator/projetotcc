@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{ atividade.titulo }}</title>
+</head>
+<body>
+
+<h1>{{ atividade.titulo }}</h1>
+
+<p>
+    {{ atividade.descricao }}
+</p>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <textarea
+        name="resposta"
+        rows="10"
+        cols="80"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Enviar Resposta
+    </button>
+
+</form>
+
+</body>
+</html>

@@ -118,3 +118,21 @@ def gerenciar_criterios(request, atividade_id):
             'criterios': criterios
         }
     )
+
+def detalhe_atividade(request, atividade_id):
+
+    atividade = get_object_or_404(
+        Atividade,
+        id=atividade_id
+    )
+
+    entregas = atividade.entregas.all()
+
+    return render(
+        request,
+        'professor/detalhe_atividade.html',
+        {
+            'atividade': atividade,
+            'entregas': entregas
+        }
+    )

@@ -64,6 +64,10 @@
 
     <h3>{{ atividade.titulo }}</h3>
 
+    <a href="{% url 'detalhe_atividade' atividade.id %}">
+    Ver Entregas
+</a>
+
     <p>
         {{ atividade.descricao }}
     </p>
