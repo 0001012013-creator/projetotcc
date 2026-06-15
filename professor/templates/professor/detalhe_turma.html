@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ turma.nome }} | EduHub</title>
+  <link rel="stylesheet" href="{% static 'css/detalhe_turma.css' %}">
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+  <span class="brand">Edu<span>Hub</span></span>
+  <a href="{% url 'dashboard_professor' %}" class="btn-back">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Voltar
+  </a>
+</header>
+
+<div class="page">
+
+  <!-- Hero da turma -->
+  <div class="turma-hero">
+    <div class="hero-eyebrow">Painel do Professor</div>
+    <h1>{{ turma.nome }}</h1>
+    {% if turma.descricao %}
+      <p class="desc">{{ turma.descricao }}</p>
+    {% endif %}
+    <div class="hero-meta">
+      <div class="hero-chip">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        Prof. {{ turma.professor.first_name }}
+      </div>
+      <div class="hero-chip">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        {{ turma.alunos.count }} aluno{{ turma.alunos.count|pluralize }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Alunos -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="dot" style="background:#3B82F6"></div>
+        Alunos
+      </div>
+    </div>
+
+    {% if turma.alunos.all %}
+    <div class="alunos-grid">
+      {% for aluno in turma.alunos.all %}
+      <div class="aluno-chip">
+        {% if aluno.foto %}
+          <img class="aluno-av" src="{{ aluno.foto.url }}" alt="{{ aluno.first_name }}">
+        {% else %}
+          <div class="aluno-av-placeholder">{{ aluno.first_name|slice:":1" }}</div>
+        {% endif %}
+        <span class="aluno-name">{{ aluno.first_name }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><p>Nenhum aluno nesta turma.</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Atividades -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        <div class="dot" style="background:#7C3AED"></div>
+        Atividades
+      </div>
+      <a href="{% url 'criar_atividade' turma.id %}" class="btn-new">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nova Atividade
+      </a>
+    </div>
+
+    {% if atividades %}
+    <div class="atividades-list">
+      {% for atividade in atividades %}
+
+<div
+    style="
+        border:1px solid #ddd;
+        padding:15px;
+        margin-bottom:10px;
+        border-radius:8px;
+    "
+>
+
+    <h3>{{ atividade.titulo }}</h3>
+
+    <p>
+        {{ atividade.descricao }}
+    </p>
+
+    <small>
+        Entrega:
+        {{ atividade.data_entrega }}
+    </small>
+
+    <br><br>
+
+    <a
+        href="{% url 'detalhe_atividade' atividade.id %}"
+        style="
+            background:#2563eb;
+            color:white;
+            padding:10px 16px;
+            border-radius:8px;
+            text-decoration:none;
+        "
+    >
+        Ver Detalhes
+    </a>
+
+    <a
+    href="{% url 'editar_atividade' atividade.id %}"
+    style="
+        background:#f59e0b;
+        color:white;
+        padding:10px 16px;
+        border-radius:8px;
+        text-decoration:none;
+        margin-left:10px;
+    "
+>
+    ✏ Editar
+</a>
+
+</div>
+
+{% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><p>Nenhuma atividade cadastrada ainda.</p></div>
+    {% endif %}
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Recuperar Senha — EduHub</title>
+<link rel="stylesheet" href="{% static 'css/login.css' %}"/>
+<style>
+/* ── Sobrescreve só o necessário para esta tela ── */
+main { justify-content: center; }
+
+.recover-icon {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: #fff;
+}
+.recover-icon svg { width: 24px; height: 24px; }
+
+.recover-desc {
+  font-size: .83rem;
+  color: rgba(255,255,255,.65);
+  text-align: center;
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+}
+
+.alert-success {
+  background: rgba(59,109,17,.25);
+  border: 1px solid rgba(192,221,151,.4);
+  color: #c0dd97;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: .83rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.alert-success svg {
+  width: 15px; height: 15px; flex-shrink: 0;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+</style>
+</head>
+<body>
+
+<!-- PERSONAGEM 3D (mesmo do login) -->
+<div class="illustration-side">
+  <img src="{% static 'img/student.png' %}" alt="Aluno EduHub" class="student-image">
+</div>
+
+<!-- FORMULÁRIO -->
+<main>
+
+  <div class="logo-container">
+    <img src="{% static 'img/logo.png' %}" alt="Logo EduHub" class="logo">
+  </div>
+
+  <h1>EduHub</h1>
+  <p class="subtitle">Recuperação de Senha</p>
+
+  <!-- Ícone de cadeado -->
+  <div class="recover-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  </div>
+
+  <p class="recover-desc">
+    Informe seu e-mail cadastrado. O administrador
+    receberá a solicitação e redefinirá seu acesso.
+  </p>
+
+  <!-- Mensagem de sucesso -->
+  {% if sucesso %}
+  <div class="alert-success">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    {{ sucesso }}
+  </div>
+  {% endif %}
+
+  <!-- Mensagem de erro (reusa .alert do login.css) -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" action="{% url 'solicitar_recuperacao' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="seu.email@exemplo.com"
+        required
+        autocomplete="email"
+      >
+    </div>
+
+    <button type="submit" class="btn-submit">
+      Enviar Solicitação
+    </button>
+
+  </form>
+
+  <div class="footer-links">
+    <a href="{% url 'login' %}">← Voltar para o login</a>
+  </div>
+
+</main>
+
+</body>
+</html>

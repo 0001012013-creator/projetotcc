@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --blue:    #2563EB;
+  --blue-d:  #1D4ED8;
+  --blue-l:  #60A5FA;
+  --violet:  #7C3AED;
+  --teal:    #0D9488;
+  --ink:     #0F172A;
+  --ink2:    #334155;
+  --ink3:    #64748B;
+  --ink4:    #94A3B8;
+  --bg:      #F8FAFF;
+  --surface: #FFFFFF;
+  --border:  #E2E8F0;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Topbar ── */
+.topbar {
+  height: 58px;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--violet), var(--teal));
+}
+
+.brand {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  letter-spacing: -.2px;
+}
+.brand span { color: #A78BFA; }
+
+.btn-back {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,.6);
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 6px 14px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: all .15s;
+}
+.btn-back:hover { color: white; background: rgba(255,255,255,.13); }
+
+/* ── Page ── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px 72px;
+}
+
+/* ── Header ── */
+.page-header {
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -.5px;
+  line-height: 1.2;
+}
+
+.page-header p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--ink3);
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(37,99,235,.12);
+}
+
+/* Cabeçalho colorido do card */
+.card-head {
+  padding: 22px 22px 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cores alternadas por posição */
+.card:nth-child(3n+1) .card-head { background: linear-gradient(135deg, #1D4ED8, #3B82F6); }
+.card:nth-child(3n+2) .card-head { background: linear-gradient(135deg, #6D28D9, #8B5CF6); }
+.card:nth-child(3n+3) .card-head { background: linear-gradient(135deg, #0D9488, #14B8A6); }
+
+/* Padrão pontilhado decorativo */
+.card-head::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.15) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+
+/* Orbe decorativo */
+.card-head::after {
+  content: '';
+  position: absolute;
+  bottom: -28px; right: -28px;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.1);
+  pointer-events: none;
+}
+
+.card-icon {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+.card-icon svg { color: white; }
+
+.card-head h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -.2px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.3;
+}
+
+/* Corpo do card */
+.card-body {
+  padding: 18px 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: 9px;
+}
+
+.meta-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink3);
+}
+.meta-label svg { color: var(--ink4); }
+
+.meta-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* CTA */
+.card-footer {
+  padding: 0 22px 20px;
+}
+
+.btn-acessar {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  border-radius: 9px;
+  text-decoration: none;
+  transition: all .18s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:nth-child(3n+1) .btn-acessar { background: linear-gradient(135deg, #1D4ED8, #3B82F6); box-shadow: 0 3px 10px rgba(37,99,235,.3); }
+.card:nth-child(3n+2) .btn-acessar { background: linear-gradient(135deg, #6D28D9, #8B5CF6); box-shadow: 0 3px 10px rgba(109,40,217,.3); }
+.card:nth-child(3n+3) .btn-acessar { background: linear-gradient(135deg, #0D9488, #14B8A6); box-shadow: 0 3px 10px rgba(13,148,136,.3); }
+
+.btn-acessar:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+/* ── Empty state ── */
+.empty-state {
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  padding: 64px 40px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 52px; height: 52px;
+  background: #EFF6FF;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--blue);
+}
+
+.empty-state h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.empty-state p { font-size: 13.5px; color: var(--ink3); }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .page { padding: 28px 16px 56px; }
+  .topbar { padding: 0 20px; }
+  .grid { grid-template-columns: 1fr; }
+}

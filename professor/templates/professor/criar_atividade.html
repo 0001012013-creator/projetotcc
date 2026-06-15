@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Nova Atividade</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+    background:#f5f7fb;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+h1{
+    color:#1e3a8a;
+}
+
+h2{
+    margin-top:30px;
+    color:#334155;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.criterio{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    align-items:center;
+}
+
+.criterio input:first-child{
+    flex:3;
+}
+
+.criterio input:nth-child(2){
+    flex:1;
+}
+
+.btn{
+    padding:12px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#1d4ed8;
+}
+
+.btn-secondary{
+    background:#e2e8f0;
+}
+
+.btn-add{
+    background:#10b981;
+    color:white;
+}
+
+.btn-add:hover{
+    background:#059669;
+}
+
+.btn-remove{
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:8px;
+    width:42px;
+    height:42px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-remove:hover{
+    background:#dc2626;
+}
+
+a{
+    text-decoration:none;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<h1>Nova Atividade</h1>
+
+<p>
+<strong>Turma:</strong>
+{{ turma.nome }}
+</p>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <p>Título</p>
+
+    <input
+        type="text"
+        name="titulo"
+        required
+    >
+
+    <br><br>
+
+    <p>Descrição</p>
+
+    <textarea
+        name="descricao"
+        rows="6"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <p>Data de Entrega</p>
+
+    <input
+        type="date"
+        name="data_entrega"
+    >
+
+    <h2>Critérios de Correção</h2>
+
+    <p>
+        Estes critérios serão usados futuramente pela IA para corrigir a atividade.
+    </p>
+
+    <div id="criterios-container">
+
+        <div class="criterio">
+
+            <input
+                type="text"
+                name="criterio[]"
+                placeholder="Ex: Introdução"
+            >
+
+            <input
+                type="number"
+                name="peso[]"
+                placeholder="Peso"
+                step="0.1"
+            >
+
+            <button
+                type="button"
+                class="btn-remove"
+                onclick="removerCriterio(this)"
+            >
+                ✕
+            </button>
+
+        </div>
+
+    </div>
+
+    <button
+        type="button"
+        class="btn btn-add"
+        onclick="adicionarCriterio()"
+    >
+        + Adicionar Critério
+    </button>
+
+    <button
+        type="button"
+        class="btn btn-primary"
+        onclick="finalizarCriterios()"
+    >
+        ✓ Finalizar Critérios
+    </button>
+
+    <p
+        id="msg-criterios"
+        style="
+            display:none;
+            color:green;
+            margin-top:10px;
+            font-weight:bold;
+        "
+    >
+        ✓ Critérios finalizados com sucesso.
+    </p>
+
+    <br><br><br>
+
+    <button
+        type="submit"
+        id="btn-criar"
+        class="btn btn-primary"
+        disabled
+    >
+        Criar Atividade
+    </button>
+
+</form>
+
+<br>
+
+<a
+    href="{% url 'detalhe_turma' turma.id %}"
+    class="btn btn-secondary"
+>
+    ← Voltar
+</a>
+
+</div>
+
+<script>
+
+function adicionarCriterio(){
+
+    let container =
+        document.getElementById(
+            'criterios-container'
+        );
+
+    container.insertAdjacentHTML(
+        'beforeend',
+        `
+        <div class="criterio">
+
+            <input
+                type="text"
+                name="criterio[]"
+                placeholder="Novo critério"
+            >
+
+            <input
+                type="number"
+                name="peso[]"
+                placeholder="Peso"
+                step="0.1"
+            >
+
+            <button
+                type="button"
+                class="btn-remove"
+                onclick="removerCriterio(this)"
+            >
+                ✕
+            </button>
+
+        </div>
+        `
+    );
+
+}
+
+function removerCriterio(botao){
+
+    let criterios =
+        document.querySelectorAll('.criterio');
+
+    if(criterios.length <= 1){
+
+        alert(
+            'A atividade deve possuir pelo menos um critério.'
+        );
+
+        return;
+    }
+
+    let linha =
+        botao.closest('.criterio');
+
+    linha.remove();
+
+}
+
+function finalizarCriterios(){
+
+    let criterios =
+        document.getElementsByName(
+            'criterio[]'
+        );
+
+    let pesos =
+        document.getElementsByName(
+            'peso[]'
+        );
+
+    for(let i = 0; i < criterios.length; i++){
+
+        if(
+            criterios[i].value.trim() === '' ||
+            pesos[i].value.trim() === ''
+        ){
+
+            alert(
+                'Preencha todos os critérios e pesos.'
+            );
+
+            return;
+        }
+    }
+
+    criterios.forEach(
+        campo => campo.readOnly = true
+    );
+
+    pesos.forEach(
+        campo => campo.readOnly = true
+    );
+
+    document.getElementById(
+        'btn-criar'
+    ).disabled = false;
+
+    document.getElementById(
+        'msg-criterios'
+    ).style.display = 'block';
+
+}
+
+</script>
+
+</body>
+</html>

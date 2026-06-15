@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{ turma.nome }}</title>
+</head>
+<body>
+
+<h1>{{ turma.nome }}</h1>
+
+<h2>Atividades</h2>
+
+{% for atividade in atividades %}
+
+<div>
+
+    <h3>{{ atividade.titulo }}</h3>
+
+    <p>{{ atividade.descricao }}</p>
+
+    <p>
+        Entrega:
+        {{ atividade.data_entrega }}
+    </p>
+
+    <a href="{% url 'responder_atividade' atividade.id %}">
+        Responder Atividade
+    </a>
+
+</div>
+
+<hr>
+
+{% empty %}
+
+<p>
+    Nenhuma atividade disponível.
+</p>
+
+{% endfor %}
+
+<a href="{% url 'dashboard_aluno' %}">
+    ← Voltar
+</a>
+
+</body>
+</html>

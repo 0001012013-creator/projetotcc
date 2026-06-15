@@ -1,0 +1,135 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EduHub - Login</title>
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+</head>
+
+<body>
+
+<!-- PERSONAGEM 3D -->
+<div class="illustration-side">
+
+    <img
+        src="{% static 'img/student.png' %}"
+        alt="Aluno EduHub"
+        class="student-image"
+    >
+
+</div>
+
+<!-- FORMULÁRIO -->
+<main>
+
+    <div class="logo-container">
+
+        <img
+            src="{% static 'img/logo.png' %}"
+            alt="Logo EduHub"
+            class="logo"
+        >
+
+    </div>
+
+    <h1>EduHub</h1>
+
+    <p class="subtitle">
+        Sistema Inteligente de Gestão Escolar
+    </p>
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert">
+
+                {{ message }}
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    <!-- FORM LOGIN -->
+    <form method="POST" autocomplete="off">
+
+        {% csrf_token %}
+
+        <!-- TRUQUE ANTI-AUTOFILL -->
+        <input type="text" name="fake_user" style="display:none">
+        <input type="password" name="fake_pass" style="display:none">
+
+        <!-- EMAIL -->
+        <div class="form-group">
+
+            <label for="username">
+                E-mail
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="eduardo@aluno.com"
+                required
+                autocomplete="off"
+            >
+
+        </div>
+
+        <!-- SENHA -->
+        <div class="form-group">
+
+            <label for="password">
+                Senha
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Digite sua senha"
+                required
+                autocomplete="new-password"
+            >
+
+        </div>
+
+        <!-- BOTÃO -->
+        <button type="submit" class="btn-submit">
+            Entrar
+        </button>
+
+    </form>
+
+    <!-- RECUPERAÇÃO -->
+    <div class="footer-links">
+
+        <a href="{% url 'solicitar_recuperacao' %}">
+            Esqueci minha senha
+        </a>
+
+    </div>
+
+    <div class="access-info">
+        O acesso será direcionado automaticamente
+        conforme o perfil do usuário.
+    </div>
+
+</main>
+
+<script src="{% static 'js/login.js' %}"></script>
+
+</body>
+
+</html>

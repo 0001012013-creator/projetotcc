@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Minhas Turmas</title>
+</head>
+<body>
+
+<h1>Minhas Turmas</h1>
+
+{% for turma in turmas %}
+
+<div>
+
+    <h3>{{ turma.nome }}</h3>
+
+    <p>{{ turma.descricao }}</p>
+
+    <a href="{% url 'detalhe_turma_aluno' turma.id %}">
+        Entrar na Turma
+    </a>
+
+</div>
+
+<hr>
+
+{% empty %}
+
+<p>
+    Nenhuma turma encontrada.
+</p>
+
+{% endfor %}
+
+</body>
+</html>

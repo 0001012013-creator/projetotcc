@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastrar Usuário — EduHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
+</head>
+<body>
+<div class="container">
+
+  {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success show{% else %}alert-danger show{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+ 
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <h1>Cadastrar Usuário</h1>
+      <p>Preencha os dados para criar o acesso na plataforma</p>
+    </div>
+  </div>
+ 
+  <!-- ALERTA -->
+  <div class="alert alert-success" id="alert-ok">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    Usuário cadastrado com sucesso!
+  </div>
+  <div class="alert alert-danger" id="alert-err">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Erro ao cadastrar. Verifique os dados.
+  </div>
+ 
+  <div class="card">
+ 
+    <!-- ABAS -->
+    <div class="tabs">
+      <div class="tab active-admin" id="tab-admin" onclick="switchTab('admin')">
+        <div class="tab-dot admin"></div>Administrador
+      </div>
+      <div class="tab" id="tab-aluno" onclick="switchTab('aluno')">
+        <div class="tab-dot aluno"></div>Aluno
+      </div>
+      <div class="tab" id="tab-prof" onclick="switchTab('prof')">
+        <div class="tab-dot prof"></div>Professor
+      </div>
+    </div>
+ 
+    <!-- ══ PAINEL ADMIN ══ -->
+    <form method="POST" action="{% url 'cadastro_usuario' %}" enctype="multipart/form-data" class="form-panel active" id="panel-admin">
+      {% csrf_token %}
+      <input type="hidden" name="tipo_usuario" value="admin">
+ 
+      <p class="form-title">Dados do Administrador</p>
+ 
+      <!-- Foto -->
+      <div class="foto-section">
+        <div class="foto-circle" id="foto-circle-admin">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <label class="btn btn-ghost btn-sm" for="foto-admin" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Enviar foto
+          </label>
+          <input type="file" id="foto-admin" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this,'foto-circle-admin')">
+          <p style="font-size:.75rem;color:var(--text3);margin-top:4px;">JPG ou PNG · máx. 2 MB</p>
+        </div>
+      </div>
+ 
+      <div class="grid-2">
+        <div class="field col-span-2">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" name="first_name" id="admin-nome" placeholder="Nome completo" required oninput="gerarEmail('admin')">
+        </div>
+        <div class="field">
+          <label>Data de nascimento <span class="req">*</span></label>
+          <input type="date" name="data_nascimento" required>
+        </div>
+        <div class="field">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+        </div>
+        <div class="field">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="field col-span-2">
+          <label>Endereço completo <span class="req">*</span></label>
+          <input type="text" name="endereco" placeholder="Rua, número, bairro, cidade, CEP" required>
+        </div>
+      </div>
+ 
+      <!-- Credenciais geradas -->
+      <div class="cred-box" id="cred-admin">
+        <p>Credenciais geradas automaticamente</p>
+        <div class="cred-row">
+          <span class="cred-label">E-mail</span>
+          <span class="cred-val" id="cred-admin-email">—</span>
+          <button type="button" class="btn-copiar" onclick="copiar('cred-admin-email')">Copiar</button>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label">Senha</span>
+          <span class="cred-val" id="cred-admin-senha">—</span>
+          <button type="button" class="btn-copiar" onclick="copiar('cred-admin-senha')">Copiar</button>
+        </div>
+      </div>
+      <input type="hidden" name="email" id="admin-email-hidden">
+      <input type="hidden" name="senha_gerada" id="admin-senha-hidden">
+ 
+      <div class="btn-row">
+        <button type="reset" class="btn btn-ghost">Limpar</button>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+      </div>
+    </form>
+ 
+    <!-- ══ PAINEL ALUNO ══ -->
+    <form method="POST" action="{% url 'cadastro_usuario' %}" enctype="multipart/form-data" class="form-panel" id="panel-aluno">
+      {% csrf_token %}
+      <input type="hidden" name="tipo_usuario" value="aluno">
+ 
+      <p class="form-title">Dados do Aluno</p>
+ 
+      <div class="foto-section">
+        <div class="foto-circle" id="foto-circle-aluno">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <label class="btn btn-ghost btn-sm" for="foto-aluno" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Enviar foto
+          </label>
+          <input type="file" id="foto-aluno" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this,'foto-circle-aluno')">
+          <p style="font-size:.75rem;color:var(--text3);margin-top:4px;">JPG ou PNG · máx. 2 MB</p>
+        </div>
+      </div>
+ 
+      <div class="grid-2">
+        <div class="field col-span-2">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" name="first_name" id="aluno-nome" placeholder="Nome completo" required oninput="gerarEmail('aluno')">
+        </div>
+        <div class="field">
+          <label>Data de nascimento <span class="req">*</span></label>
+          <input type="date" name="data_nascimento" required>
+        </div>
+        <div class="field">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+        </div>
+        <div class="field">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="field col-span-2">
+          <label>Endereço completo <span class="req">*</span></label>
+          <input type="text" name="endereco" placeholder="Rua, número, bairro, cidade, CEP" required>
+        </div>
+      </div>
+ 
+      <hr class="divider">
+      <p class="form-title" style="margin-bottom:.75rem;">Dados do Responsável</p>
+      <div class="grid-2">
+        <div class="field col-span-2">
+          <label>Nome completo do responsável <span class="req">*</span></label>
+          <input type="text" name="responsavel_nome" placeholder="Nome completo" required>
+        </div>
+        <div class="field">
+          <label>Telefone do responsável <span class="req">*</span></label>
+          <input type="text" name="responsavel_tel" placeholder="(00) 00000-0000" required>
+        </div>
+      </div>
+ 
+      <div class="cred-box" id="cred-aluno">
+        <p>Credenciais geradas automaticamente</p>
+        <div class="cred-row">
+          <span class="cred-label">E-mail</span>
+          <span class="cred-val" id="cred-aluno-email">—</span>
+          <button type="button" class="btn-copiar" onclick="copiar('cred-aluno-email')">Copiar</button>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label">Senha</span>
+          <span class="cred-val" id="cred-aluno-senha">—</span>
+          <button type="button" class="btn-copiar" onclick="copiar('cred-aluno-senha')">Copiar</button>
+        </div>
+      </div>
+      <input type="hidden" name="email" id="aluno-email-hidden">
+      <input type="hidden" name="senha_gerada" id="aluno-senha-hidden">
+ 
+      <div class="btn-row">
+        <button type="reset" class="btn btn-ghost">Limpar</button>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+      </div>
+    </form>
+ 
+    <!-- ══ PAINEL PROFESSOR ══ -->
+    <form method="POST" action="{% url 'cadastro_usuario' %}" enctype="multipart/form-data" class="form-panel" id="panel-prof">
+      {% csrf_token %}
+      <input type="hidden" name="tipo_usuario" value="professor">
+ 
+      <p class="form-title">Dados do Professor</p>
+ 
+      <div class="foto-section">
+        <div class="foto-circle" id="foto-circle-prof">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <label class="btn btn-ghost btn-sm" for="foto-prof" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Enviar foto
+          </label>
+          <input type="file" id="foto-prof" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this,'foto-circle-prof')">
+          <p style="font-size:.75rem;color:var(--text3);margin-top:4px;">JPG ou PNG · máx. 2 MB</p>
+        </div>
+      </div>
+ 
+      <div class="grid-2">
+        <div class="field col-span-2">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" name="first_name" id="prof-nome" placeholder="Nome completo" required oninput="gerarEmail('prof')">
+        </div>
+        <div class="field">
+          <label>Data de nascimento <span class="req">*</span></label>
+          <input type="date" name="data_nascimento" required>
+        </div>
+        <div class="field">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+        </div>
+        <div class="field">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="text" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="field col-span-2">
+          <label>Endereço completo <span class="req">*</span></label>
+          <input type="text" name="endereco" placeholder="Rua, número, bairro, cidade, CEP" required>
+        </div>
+      </div>
+ 
+      <div class="cred-box" id="cred-prof">
+        <p>Credenciais geradas automaticamente</p>
+        <div class="cred-row">
+          <span class="cred-label">E-mail</span>
+          <span class="cred-val" id="cred-prof-email">—</span>
+          <button type="button" class="btn-copiar" onclick="copiar('cred-prof-email')">Copiar</button>
+        </div>
+        <div class="cred-row">
+          <span class="cred-label">Senha</span>
+          <span class="cred-val" id="cred-prof-senha">—</span>
+          <button type="button" class="btn-copiar" onclick="copiar('cred-prof-senha')">Copiar</button>
+        </div>
+      </div>
+      <input type="hidden" name="email" id="prof-email-hidden">
+      <input type="hidden" name="senha_gerada" id="prof-senha-hidden">
+ 
+      <div class="btn-row">
+        <button type="reset" class="btn btn-ghost">Limpar</button>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+      </div>
+    </form>
+ 
+  </div><!-- /card -->
+</div><!-- /container -->
+
+ <div class="btn-center">
+
+    <a href="{% url 'gerenciar_usuarios' %}" class="btn btn-primary">
+        Visualizar Cadastrados
+    </a>
+
+    <a href="{% url 'dashboard_adm' %}" class="btn btn-ghost">
+        Voltar
+    </a>
+
+</div>
+
+</div>
+ 
+<script src="{% static 'js/cadastro.js' %}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const tipo = "{{ tipo_inicial|default:'' }}";
+
+    if (tipo === "admin") {
+        switchTab("admin");
+    }
+
+    if (tipo === "aluno") {
+        switchTab("aluno");
+    }
+
+    if (tipo === "professor") {
+        switchTab("prof");
+    }
+
+});
+</script>
+
+</body>
+</html>
+</body>
+</html>

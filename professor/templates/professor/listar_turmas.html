@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minhas Turmas | EduHub</title>
+  <link rel="stylesheet" href="{% static 'css/listar_turmas.css' %}">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="{% url 'dashboard_professor' %}" class="brand">Edu<span>Hub</span></a>
+  <a href="{% url 'dashboard_professor' %}" class="btn-back">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    Voltar ao Dashboard
+  </a>
+</header>
+
+<div class="page">
+
+  <header class="page-header">
+    <div class="eyebrow">Painel do Professor</div>
+    <h1>Minhas Turmas</h1>
+    <p>Selecione uma turma para acessar conteúdos, alunos e atividades.</p>
+  </header>
+
+  {% if turmas %}
+  <div class="grid">
+    {% for turma in turmas %}
+    <div class="card">
+
+      <div class="card-head">
+        <div class="card-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h2>{{ turma.nome }}</h2>
+      </div>
+
+      <div class="card-body">
+        <p class="card-desc">{{ turma.descricao }}</p>
+        <div class="card-meta">
+          <span class="meta-label">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            Alunos matriculados
+          </span>
+          <span class="meta-value">{{ turma.alunos.count }}</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <a href="{% url 'detalhe_turma' turma.id %}" class="btn-acessar">Acessar Turma</a>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
+    <h2>Nenhuma turma encontrada</h2>
+    <p>Você ainda não possui turmas atribuídas.</p>
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>

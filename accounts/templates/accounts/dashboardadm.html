@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduHub — Painel Administrativo</title>
+  {% load static %}
+
+<link rel="stylesheet" href="{% static 'css/administrador.css' %}">
+</head>
+<body>
+ 
+<!-- ═══ TOPBAR ═══════════════════════════════════════════ -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    </div>
+    Edu<span>Hub</span>
+  </div>
+ 
+  <div class="topbar-search">
+    <svg class="search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" placeholder="Buscar usuários, turmas..."/>
+  </div>
+ 
+  <div class="topbar-right">
+    <div class="topbar-icon-btn">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="notif-dot"></span>
+    </div>
+ 
+    <div class="topbar-user">
+      <div class="avatar">AD</div>
+      <!-- Django: {{ admin_nome|slice:":2"|upper }} para iniciais dinâmicas -->
+      <div>
+        <div class="user-name">Administrador</div>
+        <!-- Django: {{ admin_nome }} -->
+        <div class="user-role">Painel Admin</div>
+      </div>
+    </div>
+  </div>
+</header>
+ 
+<!-- ═══ LAYOUT ════════════════════════════════════════════ -->
+<div class="layout">
+ 
+  <!-- ── SIDEBAR ─────────────────────────────── -->
+  <aside class="sidebar">
+ 
+    <div class="sidebar-section-label">Principal</div>
+    <a class="nav-item active" onclick="navigate('home', this)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Início
+    </a>
+ 
+    <!-- ── Cadastros: linka para as views da TASK-ADM02 ── -->
+    <div class="sidebar-section-label">Cadastros</div>
+ 
+    <a class="nav-item" href="{% url 'cadastro_usuario_tipo' 'aluno' %}">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      Alunos
+    </a>
+ 
+    <a class="nav-item" href="{% url 'cadastro_usuario_tipo' 'professor' %}">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      Educadores
+    </a>
+ 
+    <a class="nav-item" href="{% url 'cadastro_usuario_tipo' 'admin' %}">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+      </svg>
+      Gestores
+    </a>
+ 
+    <!-- ── Acadêmico: linka para views da TASK-ADM03 ── -->
+    <div class="sidebar-section-label">Acadêmico</div>
+ 
+   
+    <a class="nav-item" href="{% url 'gerenciar_turmas' %}">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </svg>
+      Turmas
+    </a>
+ 
+    <a class="nav-item" onclick="navigate('acad-alunos', this)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      Alunos
+      <span class="nav-badge green">42</span>
+      <!-- Django: {{ total_alunos }} -->
+    </a>
+ 
+    <a class="nav-item" onclick="navigate('atividades', this)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <polyline points="9 11 12 14 22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+      Atividades
+    </a>
+ 
+    <div class="sidebar-section-label">Sistema</div>
+ 
+    <a class="nav-item" onclick="navigate('relatorios', this)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      Relatórios
+    </a>
+ 
+    <a class="nav-item" href="{% url 'gerenciar_recuperacoes' %}">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+          Recuperar Senha
+      <span class="nav-badge" id="badge-senha">3</span>
+    </a>
+    <a class="nav-item" onclick="navigate('configuracoes', this)">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      Configurações
+    </a>
+ 
+    <div class="sidebar-footer">
+      
+      <a class="nav-item" href="{% url 'logout' %}">
+        Sair
+      </a>
+  </aside>
+ 
+  <!-- ── MAIN ──────────────────────────────────── -->
+  <main class="main">
+ 
+    <!-- ══ HOME ════════════════════════════════ -->
+    <section class="page-section active" id="page-home">
+      <div class="page-header">
+        <h1>Painel Administrativo</h1>
+        <p>Visão geral do sistema EduHub</p>
+      </div>
+ 
+      <div class="cards-grid">
+        <!-- Django: {{ total_alunos }} etc (TASK-ADM02) -->
+        <div class="stat-card blue">
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="stat-label">Total de Alunos</div>
+          <div class="stat-value">42</div>
+          <div class="stat-sub">↑ 4 novos esta semana</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="stat-label">Educadores</div>
+          <div class="stat-value">8</div>
+          <div class="stat-sub">Ativos na plataforma</div>
+        </div>
+        <div class="stat-card gray">
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="stat-label">Turmas Ativas</div>
+          <div class="stat-value">12</div>
+          <div class="stat-sub">3 criadas este mês</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="stat-label">Atividades</div>
+          <div class="stat-value">67</div>
+          <div class="stat-sub">18 pendentes de entrega</div>
+        </div>
+      </div>
+ 
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Últimos usuários cadastrados</div>
+              <div class="card-sub">Cadastros recentes na plataforma</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="navigate('cad-aluno', null)">Ver todos</button>
+          </div>
+          <table>
+            <thead><tr><th>Usuário</th><th>Tipo</th><th>Status</th></tr></thead>
+            <tbody>
+              <!-- Django: {% for usuario in ultimos_usuarios %} ... {% endfor %} (TASK-ADM02) -->
+              <tr>
+                <td><div class="user-cell"><div class="av a">MA</div><div><div>Maria Alves</div><small>maria@eduhub.com</small></div></div></td>
+                <td><span class="pill blue">Aluno</span></td>
+                <td><span class="pill green">Ativo</span></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><div class="av b">JS</div><div><div>João Silva</div><small>joao@eduhub.com</small></div></div></td>
+                <td><span class="pill gray">Educador</span></td>
+                <td><span class="pill green">Ativo</span></td>
+              </tr>
+              <tr>
+                <td><div class="user-cell"><div class="av c">CF</div><div><div>Carla Freitas</div><small>carla@eduhub.com</small></div></div></td>
+                <td><span class="pill blue">Aluno</span></td>
+                <td><span class="pill yellow">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+ 
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Atividade recente</div><div class="card-sub">Últimas ações no sistema</div></div>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#16a34a"></div>
+              <div class="activity-text">Turma "Português 3A" criada<small>por Administrador</small></div>
+              <div class="activity-time">09:42</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#2563eb"></div>
+              <div class="activity-text">Aluno "Carlos M." cadastrado<small>por Administrador</small></div>
+              <div class="activity-time">09:30</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#ca8a04"></div>
+              <div class="activity-text">Solicitação de senha pendente<small>de Ana Souza</small></div>
+              <div class="activity-time">09:15</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:#9ca3af"></div>
+              <div class="activity-text">Educador "Prof. Lima" adicionado<small>por Administrador</small></div>
+              <div class="activity-time">08:50</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ══ TURMAS ══════════════════════════════ -->
+
+    <!-- ══ ACADÊMICO — ALUNOS ══════════════════ -->
+    <section class="page-section" id="page-acad-alunos">
+      <div class="page-header">
+        <h1>Alunos — Visão Acadêmica</h1>
+        <p>Vínculo com turmas, frequência e desempenho</p>
+      </div>
+      <div class="card mb-6">
+        <div class="card-header">
+          <div><div class="card-title">Lista acadêmica</div><div class="card-sub">Integrar com <span class="code">
+    {% templatetag openblock %} for aluno in alunos {% templatetag closeblock %}
+</span> na TASK-ADM03</div></div>
+        </div>
+        <table>
+          <thead><tr><th>Aluno</th><th>Turma</th><th>Frequência</th><th>Média</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="user-cell"><div class="av a">MA</div><div>Maria Alves</div></div></td>
+              <td>Português 3A</td>
+              <td><span class="pill green">92%</span></td>
+              <td><span class="pill blue">8.4</span></td>
+              <td><span class="pill green">Regular</span></td>
+            </tr>
+            <tr>
+              <td><div class="user-cell"><div class="av b">PL</div><div>Pedro Lima</div></div></td>
+              <td>Matemática 2B</td>
+              <td><span class="pill yellow">71%</span></td>
+              <td><span class="pill yellow">6.1</span></td>
+              <td><span class="pill yellow">Atenção</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+ 
+    <!-- ══ ATIVIDADES ══════════════════════════ -->
+    <section class="page-section" id="page-atividades">
+      <div class="page-header"><h1>Atividades</h1><p>Visão geral — implementado na TASK-A02</p></div>
+      <div class="placeholder-section">
+        <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <h3>Módulo de Atividades</h3>
+        <p>Integrar com a view de atividades da <code>TASK-A02</code> (tela do aluno).<br>Responsável: integrante da TASK-A02.</p>
+      </div>
+    </section>
+ 
+    <!-- ══ RELATÓRIOS ══════════════════════════ -->
+    <section class="page-section" id="page-relatorios">
+      <div class="page-header"><h1>Relatórios</h1><p>Dados gerais do sistema — simulação até TASK-ADM04</p></div>
+      <div class="cards-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+          <div class="stat-label">Usuários totais</div>
+          <div class="stat-value">52</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/></svg></div>
+          <div class="stat-label">Atividades</div>
+          <div class="stat-value">67</div>
+        </div>
+        <div class="stat-card gray">
+          <div class="stat-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+          <div class="stat-label">Turmas ativas</div>
+          <div class="stat-value">12</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="stat-label">Entregas</div>
+          <div class="stat-value">238</div>
+        </div>
+      </div>
+      <div class="placeholder-section">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <h3>Relatórios detalhados</h3>
+        <p>Os dados acima são simulados. Integrar com queries reais na <code>TASK-ADM04</code>.</p>
+      </div>
+    </section>
+ 
+    <section class="page-section" id="page-recuperar-senha">
+  <div class="page-header">
+
+    <h1>Recuperação de Senha</h1>
+
+    <p>
+      Gerencie solicitações de redefinição de senha dos usuários do sistema.
+    </p>
+
+    <a href="{% url 'gerenciar_recuperacoes' %}" class="btn btn-primary">
+      Abrir Gerenciamento de Recuperações
+    </a>
+
+  </div>
+</section>
+ 
+    <!-- ══ CONFIGURAÇÕES ══════════════════════ -->
+    <section class="page-section" id="page-configuracoes">
+      <div class="page-header"><h1>Configurações</h1><p>Parâmetros da plataforma — implementado na TASK-ADM05</p></div>
+      <div class="placeholder-section">
+        <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <h3>Configurações do sistema</h3>
+        <p>Esta seção será implementada na <code>TASK-ADM05</code>.</p>
+      </div>
+    </section>
+ 
+  </main>
+</div>
+ 
+<!-- ═══ MODAIS (representativos — TASK-ADM02 substituirá por forms reais) ══ -->
+ 
+<!-- Modal Novo Aluno -->
+<div class="modal-overlay" id="modal-aluno">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Cadastrar Aluno</div>
+      <button class="modal-close" onclick="closeModal('modal-aluno')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" placeholder="Ex: Maria Alves"/></div>
+      <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" type="email" placeholder="maria@eduhub.com"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Senha</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+      <div class="form-group"><label class="form-label">Turma</label>
+        <select class="form-select"><option value="">Selecionar turma</option><option>Português 3A</option><option>Matemática 2B</option></select>
+      </div>
+    </div>
+    <p class="form-hint">Integrar com <span class="code">User.objects.create_user()</span> na TASK-ADM02</p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-aluno')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-aluno')">Cadastrar</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Modal Novo Educador -->
+<div class="modal-overlay" id="modal-educador">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Cadastrar Educador</div>
+      <button class="modal-close" onclick="closeModal('modal-educador')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" placeholder="Ex: Prof. João Silva"/></div>
+      <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" type="email" placeholder="joao@eduhub.com"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Senha</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+      <div class="form-group"><label class="form-label">Disciplina</label><input class="form-input" placeholder="Ex: Português"/></div>
+    </div>
+    <p class="form-hint">Integrar com <span class="code">User.objects.create_user()</span> na TASK-ADM02</p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-educador')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-educador')">Cadastrar</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Modal Novo Gestor -->
+<div class="modal-overlay" id="modal-gestor">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Cadastrar Gestor</div>
+      <button class="modal-close" onclick="closeModal('modal-gestor')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nome completo</label><input class="form-input" placeholder="Ex: Carlos Freitas"/></div>
+      <div class="form-group"><label class="form-label">E-mail</label><input class="form-input" type="email" placeholder="carlos@eduhub.com"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Senha</label><input class="form-input" type="password" placeholder="••••••••"/></div>
+      <div class="form-group"><label class="form-label">Nível de acesso</label>
+        <select class="form-select"><option>Admin</option><option>Super Admin</option></select>
+      </div>
+    </div>
+    <p class="form-hint">Integrar com <span class="code">User.objects.create_user()</span> na TASK-ADM02</p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-gestor')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-gestor')">Cadastrar</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Modal Nova Turma -->
+<div class="modal-overlay" id="modal-turma">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Criar Turma</div>
+      <button class="modal-close" onclick="closeModal('modal-turma')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Nome da turma</label><input class="form-input" placeholder="Ex: Português 3A"/></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Disciplina</label><input class="form-input" placeholder="Ex: Português"/></div>
+      <div class="form-group"><label class="form-label">Professor responsável</label>
+        <select class="form-select"><option value="">Selecionar</option><option>Prof. João Silva</option><option>Prof. Carla Mota</option></select>
+      </div>
+    </div>
+    <p class="form-hint">Integrar com model <span class="code">Turma</span> na TASK-ADM03</p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-turma')">Cancelar</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-turma')">Criar Turma</button>
+    </div>
+  </div>
+</div>
+ 
+
+<script src="{% static 'admin/js/main.js' %}"></script> 
+</body>
+</html>

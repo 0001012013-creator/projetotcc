@@ -1,0 +1,40 @@
+{% if entrega_existente %}
+
+<h2>Atividade já enviada</h2>
+
+<p>
+    Você já respondeu esta atividade.
+</p>
+
+<p>
+    <strong>Nota:</strong>
+    {{ entrega_existente.nota }}
+</p>
+
+<p>
+    <strong>Feedback:</strong><br>
+    {{ entrega_existente.feedback }}
+</p>
+
+{% else %}
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <textarea
+        name="resposta"
+        rows="10"
+        cols="80"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Enviar Resposta
+    </button>
+
+</form>
+
+{% endif %}

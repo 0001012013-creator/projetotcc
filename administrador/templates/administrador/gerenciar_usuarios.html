@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gerenciar Usuários — EduHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}"/>
+</head>
+<body>
+<div class="container">
+
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <h1>Gerenciar Usuários</h1>
+      <p>Busque, edite ou exclua usuários cadastrados</p>
+    </div>
+  </div>
+
+  <!-- CARD LISTAGEM -->
+  <div class="card">
+    <div class="list-header">
+      <h2>Usuários cadastrados</h2>
+      <div class="search-wrap">
+        <input type="text" class="search-input" placeholder="Buscar por nome ou e-mail…" oninput="filtrar(this.value)"/>
+        <select class="filter-select" onchange="filtrarPerfil(this.value)">
+          <option value="">Todos os perfis</option>
+          <option value="admin">Administrador</option>
+          <option value="aluno">Aluno</option>
+          <option value="professor">Professor</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="user-table" id="user-table">
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>E-mail</th>
+          <th>Perfil</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for usuario in usuarios %}
+        <tr data-perfil="{{ usuario.user_type }}">
+
+          <!-- Foto em círculo + nome -->
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              {% if usuario.foto %}
+                <img src="{{ usuario.foto.url }}"
+                     style="width:32px;height:32px;border-radius:50%;object-fit:cover;
+                            border:1.5px solid var(--border);flex-shrink:0;">
+              {% else %}
+                <div style="width:32px;height:32px;border-radius:50%;
+                            background:var(--admin-bg);border:1.5px solid var(--border);
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:.72rem;font-weight:600;color:var(--admin);flex-shrink:0;">
+                  {{ usuario.first_name|slice:":1"|upper }}
+                </div>
+              {% endif %}
+              <span>{{ usuario.first_name }}</span>
+            </div>
+          </td>
+
+          <td class="td-mono">{{ usuario.email }}</td>
+
+          <td>
+            <span class="badge badge-{{ usuario.user_type }}">
+              {{ usuario.get_user_type_display }}
+            </span>
+          </td>
+
+          <td>
+            <div class="action-row">
+              <a href="{% url 'editar_usuario' usuario.id %}" class="btn btn-sm btn-ghost">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Editar
+              </a>
+              <a href="{% url 'excluir_usuario' usuario.id %}"
+                 class="btn btn-sm btn-danger-ghost"
+                 onclick="return confirm('Deseja excluir {{ usuario.first_name }}? Esta ação não pode ser desfeita.')">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                Excluir
+              </a>
+            </div>
+          </td>
+
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              Nenhum usuário cadastrado ainda.
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<div class="btn-center">
+    <a href="{% url 'cadastro_usuario' %}" class="btn btn-primary">
+        + Cadastrar novo usuário
+    </a>
+
+    <a href="{% url 'dashboard_adm' %}" class="btn btn-ghost">
+        Voltar para a página inicial
+    </a>
+</div>
+
+</div>
+
+<script>
+  function filtrar(termo) {
+    const t = termo.toLowerCase();
+    document.querySelectorAll('#user-table tbody tr[data-perfil]').forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().includes(t) ? '' : 'none';
+    });
+  }
+  function filtrarPerfil(perfil) {
+    document.querySelectorAll('#user-table tbody tr[data-perfil]').forEach(tr => {
+      tr.style.display = (!perfil || tr.dataset.perfil === perfil) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

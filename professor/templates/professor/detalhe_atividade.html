@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>{{ atividade.titulo }}</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    padding: 30px;
+}
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    margin-bottom: 20px;
+}
+h1 {
+    color: #1e3a8a;
+    margin-top: 0;
+}
+h2 {
+    color: #334155;
+}
+.info {
+    margin-bottom: 10px;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table th {
+    background: #1e3a8a;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.status-ok {
+    color: #16a34a;
+    font-weight: bold;
+}
+.status-pendente {
+    color: #dc2626;
+    font-weight: bold;
+}
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+.btn:hover {
+    background: #1d4ed8;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+        <h1>{{ atividade.titulo }}</h1>
+
+        <div class="info">
+            <strong>Turma:</strong> {{ atividade.turma.nome }}
+        </div>
+
+        <div class="info">
+            <strong>Entrega:</strong> {{ atividade.data_entrega }}
+        </div>
+
+        <div class="info">
+            <strong>Nota Máxima:</strong> {{ atividade.nota_maxima }}
+        </div>
+
+        <hr>
+
+        <h2>Descrição</h2>
+        <p>{{ atividade.descricao }}</p>
+    </div>
+
+    <div class="card">
+        <h2>Entregas dos Alunos</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Nota</th>
+                    <th>Status</th>
+                    <th>Feedback</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entrega in entregas %}
+                <tr>
+                    <td>{{ entrega.aluno.first_name }}</td>
+                    <td>{{ entrega.nota }}</td>
+                    <td>
+                        {% if entrega.corrigida %}
+                            <span class="status-ok">Corrigida</span>
+                        {% else %}
+                            <span class="status-pendente">Pendente</span>
+                        {% endif %}
+                    </td>
+                    <td style="max-width:400px;">
+                        {% if entrega.feedback|length > 200 %}
+                            <details>
+                                <summary style="cursor:pointer; color:#2563eb; font-weight:bold;">
+                                    Ver feedback completo
+                                </summary>
+                                <div style="margin-top:10px; white-space:pre-wrap; line-height:1.5;">
+                                    {{ entrega.feedback }}
+                                </div>
+                            </details>
+                        {% else %}
+                            {{ entrega.feedback }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Nenhuma entrega recebida.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'detalhe_turma' atividade.turma.id %}" class="btn">
+        ← Voltar para Turma
+    </a>
+
+</div>
+
+</body>
+</html>

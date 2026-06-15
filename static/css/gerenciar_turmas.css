@@ -1,0 +1,380 @@
+/* ============================================================
+   EduHub — gerenciar_turmas.css
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+  --bg:         #F4F3EF;
+  --surface:    #FFFFFF;
+  --surface2:   #F8F7F3;
+  --border:     #E2E0D8;
+  --text:       #1A1917;
+  --text2:      #6B6960;
+  --text3:      #9B9A94;
+  --accent:     #534AB7;
+  --accent-bg:  #EEEDFE;
+  --accent-mid: #7F77DD;
+  --green:      #0F6E56;
+  --green-bg:   #E1F5EE;
+  --danger:     #A32D2D;
+  --danger-bg:  #FCEBEB;
+  --danger-bdr: #F7C1C1;
+
+  /* Cores dos cards — rotativas */
+  --c1: #534AB7; --c1-bg: #EEEDFE;
+  --c2: #0F6E56; --c2-bg: #E1F5EE;
+  --c3: #993C1D; --c3-bg: #FAECE7;
+  --c4: #0d6b9e; --c4-bg: #e0f3fb;
+
+  --radius:    12px;
+  --radius-sm: 8px;
+  --shadow:    0 2px 8px rgba(0,0,0,.06);
+  --shadow-md: 0 8px 24px rgba(0,0,0,.10);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.container { max-width: 1100px; margin: 0 auto; }
+
+/* ── Page header ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  gap: 16px;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+
+.header-icon {
+  width: 48px; height: 48px;
+  background: var(--accent);
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(83,74,183,.3);
+}
+.header-icon svg { width: 22px; height: 22px; stroke: #fff; }
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.03em;
+  line-height: 1.1;
+}
+.page-header p { font-size: .85rem; color: var(--text2); margin-top: 3px; }
+
+/* ── Botão nova turma ── */
+.btn-new {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 0 20px;
+  height: 40px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: .875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  box-shadow: 0 3px 12px rgba(83,74,183,.35);
+}
+.btn-new svg { width: 15px; height: 15px; }
+.btn-new:hover {
+  background: #463fa0;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(83,74,183,.45);
+}
+.btn-new:active { transform: translateY(0); }
+
+/* ── Stats ── */
+.stats-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow);
+}
+.stat-item { display: flex; flex-direction: column; gap: 2px; }
+.stat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+.stat-label { font-size: .75rem; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+.stat-divider { width: 1px; height: 36px; background: var(--border); }
+
+/* ── Grid ── */
+.turmas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+/* ── Card de turma ── */
+.turma-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .2s, transform .2s;
+  animation: cardIn .4s cubic-bezier(.22,1,.36,1) both;
+  animation-delay: calc(var(--delay, 0) * .06s);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.turma-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+/* Topo do card — cor rotativa via nth-child */
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+/* Cor diferente por posição */
+.turma-card:nth-child(4n+1) .card-top { background: var(--c1-bg); }
+.turma-card:nth-child(4n+2) .card-top { background: var(--c2-bg); }
+.turma-card:nth-child(4n+3) .card-top { background: var(--c3-bg); }
+.turma-card:nth-child(4n+4) .card-top { background: var(--c4-bg); }
+
+.turma-card:nth-child(4n+1) .turma-inicial { background: var(--c1); }
+.turma-card:nth-child(4n+2) .turma-inicial { background: var(--c2); }
+.turma-card:nth-child(4n+3) .turma-inicial { background: var(--c3); }
+.turma-card:nth-child(4n+4) .turma-inicial { background: var(--c4); }
+
+.turma-inicial {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+.card-top-info { flex: 1; min-width: 0; }
+.turma-nome {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.turma-data { font-size: .72rem; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* Corpo */
+.card-body { padding: 16px 18px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+.card-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.info-icon {
+  width: 28px; height: 28px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--text3);
+}
+.info-icon svg { width: 14px; height: 14px; }
+
+.info-label {
+  display: block;
+  font-size: .7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text3);
+  margin-bottom: 1px;
+}
+.info-val { display: block; font-size: .875rem; color: var(--text); font-weight: 500; }
+
+/* Barra de alunos */
+.alunos-bar-wrap {
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.alunos-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+  border-radius: 4px;
+  min-width: 6px;
+  max-width: 100%;
+  transition: width .6s cubic-bezier(.22,1,.36,1);
+}
+
+/* Footer do card */
+.card-footer {
+  display: flex;
+  border-top: 1px solid var(--border);
+}
+.card-btn {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 8px;
+  font-family: inherit;
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s, color .15s;
+  cursor: pointer;
+}
+.card-btn svg { width: 13px; height: 13px; }
+
+.card-btn-edit {
+  color: var(--accent);
+  border-right: 1px solid var(--border);
+}
+.card-btn-edit:hover { background: var(--accent-bg); }
+
+.card-btn-delete { color: var(--danger); }
+.card-btn-delete:hover { background: var(--danger-bg); }
+
+/* ── Empty state ── */
+.empty-state {
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 4rem 2rem;
+  text-align: center;
+  animation: cardIn .4s ease both;
+}
+.empty-icon {
+  width: 64px; height: 64px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: var(--text3);
+}
+.empty-icon svg { width: 28px; height: 28px; }
+.empty-state h3 { font-size: 1rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+.empty-state p  { font-size: .875rem; color: var(--text3); line-height: 1.65; margin-bottom: 1.5rem; }
+
+/* ── Responsivo ── */
+@media (max-width: 640px) {
+  body { padding: 1.25rem 1rem 3rem; }
+  .page-header { flex-direction: column; align-items: flex-start; }
+  .stats-row { flex-wrap: wrap; gap: 16px; }
+  .turmas-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 1.25rem; }
+}
+
+/* ── Botões ── */
+.btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.btn {
+    height: 38px;
+    padding: 0 18px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: .875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #463fa0;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border-color: var(--border);
+}
+
+.btn-ghost:hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+.btn-danger-ghost {
+    background: transparent;
+    color: var(--danger);
+    border-color: #F7C1C1;
+}
+
+.btn-danger-ghost:hover {
+    background: var(--danger-bg);
+}
+
+.btn-sm {
+    height: 30px;
+    padding: 0 12px;
+    font-size: .8rem;
+}
+.footer-buttons{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
