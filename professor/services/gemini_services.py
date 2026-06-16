@@ -1,37 +1,22 @@
 import os
-import requests
+from dotenv import load_dotenv
+from google import genai
+
+load_dotenv()
 
 class GeminiService:
-
-
-    def gerar(self, prompt):
-
+    def __init__(self):
         api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise Exception("GEMINI_API_KEY não encontrada")
+        self.client = genai.Client(api_key=api_key)
 
-        url = (
-            "https://generativelanguage.googleapis.com/v1beta/"
-            "models/gemini-2.5-flash:generateContent"
-            f"?key={api_key}"
-        )
-
-        payload = {
-            "contents": [
-                {
-                    "parts": [
-                        {"text": prompt}
-                    ]
-                }
-            ]
-        }
-
-        response = requests.post(url, json=payload)
-
-        print("\nSTATUS GEMINI:")
-        print(response.status_code)
-
-        data = response.json()
-
-        print("\nRESPOSTA COMPLETA GEMINI:")
-        print(data)
-
-        return data["candidates"][0]["content"]["parts"][0]["text"]
+    def gerar(self, prompt: str) -> str:
+        try:
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
+            )
+            return response.text
+        except Exception as e:
+            raise Exception(f"Erro ao chamar Gemini: {e}")
