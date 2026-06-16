@@ -1,187 +1,573 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | EduHub</title>
-  <link rel="stylesheet" href="{% static 'css/dashboard_aluno.css' %}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel do Aluno</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.383.0/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:     #6C63FF;
+      --purple-lt:  #EEEDff;
+      --purple-mid: #8B85FF;
+      --orange:     #FF6B35;
+      --green:      #4CAF50;
+      --yellow:     #FFC107;
+      --red:        #F44336;
+      --bg:         #F5F6FA;
+      --sidebar-bg: #FFFFFF;
+      --card:       #FFFFFF;
+      --text:       #2D2D3A;
+      --muted:      #9B9BB4;
+      --border:     #EBEBF5;
+      --radius:     14px;
+      --shadow:     0 4px 20px rgba(108,99,255,.08);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 200px;
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 0;
+      box-shadow: 2px 0 12px rgba(0,0,0,.04);
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 10;
+    }
+    .sidebar .logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 22px 28px;
+      font-weight: 700; font-size: 17px; color: var(--purple);
+    }
+    .sidebar .logo span { font-size: 22px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 22px;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 0;
+      transition: all .2s;
+      position: relative;
+      text-decoration: none;
+    }
+    .nav-item:hover { color: var(--purple); background: var(--purple-lt); }
+    .nav-item.active {
+      color: var(--purple);
+      background: var(--purple-lt);
+      font-weight: 600;
+    }
+    .nav-item.active::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 4px; background: var(--purple);
+      border-radius: 0 4px 4px 0;
+    }
+    .nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .nav-icon svg { width: 18px; height: 18px; stroke: currentColor; }
+    .nav-badge {
+      margin-left: auto;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--purple);
+    }
+    .sidebar-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: 200px;
+      flex: 1;
+      padding: 28px 28px 40px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
+    }
+    .col-left  { display: flex; flex-direction: column; gap: 24px; }
+    .col-right { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── BANNER ── */
+    .banner {
+      background: linear-gradient(120deg, #7C72FF 0%, #9D6BFF 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      min-height: 148px;
+    }
+    .banner::after {
+      content: '';
+      position: absolute; right: -30px; top: -30px;
+      width: 220px; height: 220px;
+      background: rgba(255,255,255,.07);
+      border-radius: 50%;
+    }
+    .banner-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .banner-sub   { font-size: 13px; opacity: .88; margin-bottom: 18px; max-width: 280px; line-height: 1.5; }
+    .btn-banner {
+      display: inline-block;
+      background: rgba(255,255,255,.22);
+      border: 1.5px solid rgba(255,255,255,.55);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px; font-weight: 600;
+      padding: 9px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-banner:hover { background: rgba(255,255,255,.35); }
+    .banner-illo {
+      font-size: 80px; line-height: 1;
+      position: relative; z-index: 1;
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,.18));
+      flex-shrink: 0;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+
+    /* ── ESTATÍSTICAS ── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 14px;
+    }
+    .stat-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 18px 20px; box-shadow: var(--shadow);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-value.green { color: var(--green); }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.red { color: var(--red); }
+
+    /* ── PROJETOS + INBOX ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    .card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow);
+    }
+
+    .project-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .project-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .ring {
+      width: 50px; height: 50px; flex-shrink: 0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      background: conic-gradient(var(--clr, var(--purple)) calc(var(--pct,0) * 1%),
+                                  var(--border) 0);
+      position: relative;
+    }
+    .ring::before {
+      content: attr(data-val);
+      position: absolute;
+      width: 36px; height: 36px;
+      background: var(--card);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: var(--text);
+    }
+    .project-info .proj-name  { font-size: 13.5px; font-weight: 600; }
+    .project-info .proj-sub   { font-size: 11.5px; color: var(--muted); margin: 2px 0 4px; }
+    .project-info .proj-dead  { font-size: 11px; color: var(--muted); }
+
+    /* inbox */
+    .inbox-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .inbox-item:last-child { border-bottom: none; }
+    .inbox-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0;
+    }
+    .inbox-name   { font-size: 13px; font-weight: 600; }
+    .inbox-time   { margin-left: auto; font-size: 11px; color: var(--muted); }
+    .inbox-msg    { font-size: 12px; color: var(--muted); margin-left: 42px; margin-bottom: 6px; }
+    .tag {
+      display: inline-block;
+      margin-left: 42px;
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--purple-lt); color: var(--purple);
+    }
+
+    /* ── CRONOGRAMA ── */
+    .schedule-table { width: 100%; border-collapse: collapse; }
+    .schedule-table th {
+      font-size: 11.5px; color: var(--muted); font-weight: 600;
+      text-align: left; padding: 8px 12px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .schedule-table td { font-size: 13px; padding: 12px 12px; }
+    .schedule-table tr { border-bottom: 1px solid var(--border); }
+    .schedule-table tr:last-child { border-bottom: none; }
+    .schedule-table tr.active-row { background: var(--purple); border-radius: 10px; }
+    .schedule-table tr.active-row td { color: #fff; }
+    .schedule-table tr.active-row td:first-child { border-radius: 10px 0 0 10px; }
+    .schedule-table tr.active-row td:last-child  { border-radius: 0 10px 10px 0; }
+    .dots { color: var(--muted); font-size: 18px; cursor: pointer; letter-spacing: 2px; }
+    .dots-white { color: rgba(255,255,255,.7); font-size: 18px; letter-spacing: 2px; }
+
+    /* ── LADO DIREITO ── */
+    .stat-row-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow);
+      display: flex; justify-content: space-around; align-items: center;
+    }
+    .stat-row-item { text-align: center; }
+    .stat-row-item .label { font-size: 12px; color: var(--muted); }
+    .stat-row-item .val   { font-size: 26px; font-weight: 700; }
+
+    .friends-card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .friend-item  { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .friend-item:last-child { border-bottom: none; }
+    .friend-info .fn  { font-size: 13px; font-weight: 600; }
+    .friend-info .fs  { font-size: 11.5px; color: var(--muted); }
+    .friend-time { margin-left: auto; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+    .btn-new-chat {
+      width: 100%; margin-top: 14px;
+      background: var(--purple); color: #fff;
+      border: none; border-radius: 30px;
+      padding: 11px 0; font-family: 'Poppins', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-new-chat:hover { opacity: .88; }
+
+    .tasks-card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .task-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .task-item:last-child { border-bottom: none; }
+    .task-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; color: #fff; flex-shrink: 0;
+    }
+    .task-info .tn  { font-size: 13px; font-weight: 600; }
+    .task-info .ts  { font-size: 11px; color: var(--muted); }
+    .task-status {
+      margin-left: auto; font-size: 10.5px; font-weight: 600;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .ongoing { background: #FFF3E0; color: #E65100; }
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column; /* <- um embaixo do outro */
+  gap: 10px;
+}
+
+.sidebar-bottom a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+
+  </style>
 </head>
 <body>
 
-<!-- ── Topbar ── -->
-<header class="topbar">
-  <span class="brand">Edu<span>Hub</span></span>
-
-  <nav class="topbar-nav">
-    <a class="tnav-item active" href="#">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      Home
-    </a>
-    <a class="tnav-item" href="#">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-      </svg>
-      Atividades
-    </a>
-    <a class="tnav-item" href="#">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-      Fale com Professor
-    </a>
-    <a class="tnav-item" href="#">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-      Ajuda
-    </a>
-  </nav>
-
-  <div class="topbar-right">
-    <div class="greeting">
-      <div class="greeting-name">Olá, {{ aluno.first_name }}!</div>
-      <div class="greeting-sub">Verifique suas atividades de hoje.</div>
-    </div>
-    <div class="topbar-av">{{ aluno.first_name|slice:":1" }}</div>
-    <a href="{% url 'logout' %}" class="topbar-logout" title="Sair">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
-    </a>
-  </div>
-</header>
-
-<!-- ── Page grid ── -->
-<div class="page">
-
-  <!-- COL ESQUERDA: Atividades -->
-  <div class="col-left">
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="ct-dot" style="background:#3B72F6"></div>
-          Atividades
-        </div>
-        <a href="#" class="card-link">Ver todas</a>
-      </div>
-      <div class="act-list">
-
-        {% for atividade in atividades %}
-        <a class="act-item" href="{% url 'detalhe_atividade_aluno' atividade.id %}">
-          <div class="act-icon">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-          </div>
-          <div class="act-body">
-            <div class="act-name">{{ atividade.titulo }}</div>
-            <div class="act-date">{{ atividade.data_entrega }}</div>
-          </div>
-          {% if atividade.status == 'concluido' %}
-            <span class="status-pill pill-done">Concluído</span>
-          {% elif atividade.status == 'em_andamento' %}
-            <span class="status-pill pill-ongoing">Em andamento</span>
-          {% elif atividade.status == 'entregue' %}
-            <span class="status-pill pill-sent">Entregue</span>
-          {% else %}
-            <span class="status-pill pill-late">Pendente</span>
-          {% endif %}
-        </a>
-        {% empty %}
-        <div style="padding:24px 18px;text-align:center;color:var(--text3);font-size:13px;">
-          Nenhuma atividade no momento.
-        </div>
-        {% endfor %}
-
-      </div>
-    </div>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+    EduHub
   </div>
 
-  <!-- COL CENTRO: Turmas -->
-  <div class="col-center">
-    <div class="turmas-grid">
-      {% for turma in turmas %}
-      <a class="turma-card" href="#">
-        <div class="turma-head">
-          <div class="turma-nome">{{ turma.nome }}</div>
-          <div class="turma-prof">
-            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-            {{ turma.professor.first_name }}
-          </div>
-        </div>
-        <div class="turma-body">
-          <div class="comunicado-label">Comunicado</div>
-          {% if turma.comunicado %}
-            <div class="comunicado-text">{{ turma.comunicado|truncatechars:80 }}</div>
-          {% else %}
-            <div class="comunicado-empty">Sem comunicados.</div>
-          {% endif %}
-        </div>
-      </a>
-      {% empty %}
-      <div style="grid-column:span 2;padding:32px;text-align:center;color:var(--text3);font-size:13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)">
-        Você não está matriculado em nenhuma turma.
-      </div>
-      {% endfor %}
-    </div>
-  </div>
+  <a class="nav-item active" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Painel
+  </a>
+<a class="nav-item" href="{% if turmas %}{% url 'detalhe_turma_aluno' turmas.0.id %}{% else %}#{% endif %}">
+  <span class="nav-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  </span>
+  Atividades
+  <span class="nav-badge"></span>
+</a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Provas
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span> Projetos
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Políticas
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span> Minha Pasta
+    <span class="nav-badge"></span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> Pagamentos
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Relatórios
+  </a>
 
-  <!-- COL DIREITA: Ações rápidas -->
-  <div class="col-right">
+<div class="sidebar-bottom">
 
-    <a href="#" class="qa-btn">
-      <div class="qa-icon qa-icon-blue">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-        </svg>
-      </div>
-      <span class="qa-label">Meus Arquivos</span>
-    </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </span>
+    Configurações
+  </a>
 
-    <a href="#" class="qa-btn">
-      <div class="qa-icon qa-icon-violet">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-        </svg>
-      </div>
-      <span class="qa-label">Minhas Notas</span>
-    </a>
-
-    <a href="#" class="qa-btn">
-      <div class="qa-icon qa-icon-green">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-      </div>
-      <span class="qa-label">Minha Frequência</span>
-    </a>
-
-    <div class="divider"></div>
-
-    <a href="#" class="qa-btn">
-      <div class="qa-icon qa-icon-amber">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-      </div>
-      <span class="qa-label">Fale com Professor</span>
-    </a>
-
-  </div>
+  <a href="{% url 'logout' %}" class="logout-link">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <path d="M16 17l5-5-5-5"/>
+      <path d="M21 12H9"/>
+    </svg>
+    Sair
+  </a>
 
 </div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- COLUNA ESQUERDA -->
+  <div class="col-left">
+
+    <!-- Banner -->
+    <div class="banner">
+      <div>
+        <div class="banner-title">BEM-VINDO DE VOLTA, JOÃO!</div>
+        <div class="banner-sub">Você completou 60% da sua meta esta semana!<br>Comece uma nova meta e melhore seu resultado.</div>
+        <button class="btn-banner">Saiba Mais</button>
+      </div>
+      <div class="banner-illo">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="45" cy="45" r="42" fill="rgba(255,255,255,0.12)"/>
+          <rect x="22" y="28" width="30" height="38" rx="3" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+          <rect x="26" y="32" width="22" height="2.5" rx="1.2" fill="rgba(255,255,255,0.7)"/>
+          <rect x="26" y="38" width="18" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="26" y="43" width="20" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="26" y="48" width="14" height="2" rx="1" fill="rgba(255,255,255,0.5)"/>
+          <rect x="38" y="28" width="30" height="38" rx="3" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          <line x1="38" y1="28" x2="38" y2="66" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+          <circle cx="62" cy="30" r="10" fill="#FFD54F" opacity="0.9"/>
+          <path d="M58 30l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Estatísticas rápidas (em cards separados no mobile fica melhor) -->
+    <!-- Seção Projetos + Inbox lado a lado -->
+    <div class="two-col">
+
+      <!-- Projetos -->
+      <div class="card">
+        <div class="section-title">Estatísticas de Projetos</div>
+
+        <div class="project-item">
+          <div class="ring" data-val="85" style="--pct:85;--clr:#6C63FF"></div>
+          <div class="project-info">
+            <div class="proj-name">Projeto Cirurgia de Rãs</div>
+            <div class="proj-sub">Biologia</div>
+            <div class="proj-dead">Prazo 12 Ago 2025 (10:45)</div>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="ring" data-val="60" style="--pct:60;--clr:#FF6B35"></div>
+          <div class="project-info">
+            <div class="proj-name">Projeto Terra Quântica</div>
+            <div class="proj-sub">Ciências</div>
+            <div class="proj-dead">Prazo 12 Set 2025 (10:45)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caixa de Entrada -->
+      <div class="card">
+        <div class="section-title">Caixa de Entrada</div>
+
+        <div class="inbox-item">
+          <div class="inbox-header">
+            <div class="avatar" style="background:#FF6B35">M</div>
+            <span class="inbox-name">Michael Wong</span>
+            <span class="inbox-time">09:32</span>
+          </div>
+          <div class="inbox-msg">Não se esqueça de trabalhar na tarefa, página 36 in…</div>
+          <span class="tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Prova-Ciências.xls</span>
+        </div>
+
+        <div class="inbox-item">
+          <div class="inbox-header">
+            <div class="avatar" style="background:#4CAF50">C</div>
+            <span class="inbox-name">Cindy Chen</span>
+            <span class="inbox-time">11:32</span>
+          </div>
+          <div class="inbox-msg">Você fez as tarefas de história?</div>
+          <span class="tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Álgebra.pdf</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cronograma de Provas -->
+    <div class="card">
+      <div class="section-title">Cronograma de Provas</div>
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th>Matéria</th><th>Turma</th><th>Dia</th><th>Data</th><th>Hora</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Física</strong></td>
+            <td>Turma 3</td>
+            <td>Terça</td>
+            <td>3 Dez 2025</td>
+            <td>08:30</td>
+            <td class="dots">···</td>
+          </tr>
+          <tr class="active-row">
+            <td><strong>Biologia</strong></td>
+            <td>Lab 1</td>
+            <td>Segunda</td>
+            <td>4 Dez 2025</td>
+            <td>08:30</td>
+            <td class="dots-white">···</td>
+          </tr>
+          <tr>
+            <td><strong>Matemática</strong></td>
+            <td>Prática 3</td>
+            <td>Quinta</td>
+            <td>5 Dez 2025</td>
+            <td>08:30</td>
+            <td class="dots">···</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- COLUNA DIREITA -->
+  <div class="col-right">
+
+    <!-- Stats -->
+    <div class="stat-row-card">
+      <div class="stat-row-item">
+        <div class="label">Presença</div>
+        <div class="val green">359</div>
+      </div>
+      <div class="stat-row-item">
+        <div class="label">Atraso</div>
+        <div class="val orange">12</div>
+      </div>
+      <div class="stat-row-item">
+        <div class="label">Falta</div>
+        <div class="val red">04</div>
+      </div>
+    </div>
+
+    <!-- Amigos online -->
+    <div class="friends-card">
+      <div class="section-title">Colegas Online</div>
+
+      <div class="friend-item">
+        <div class="avatar" style="background:#E91E63">F</div>
+        <div class="friend-info">
+          <div class="fn">Francis Tran</div>
+        </div>
+        <div class="friend-time">5 min atrás</div>
+      </div>
+      <div class="friend-item">
+        <div class="avatar" style="background:#9C27B0">E</div>
+        <div class="friend-info">
+          <div class="fn">Elliana Palacios</div>
+        </div>
+        <div class="friend-time">23 min atrás</div>
+      </div>
+      <div class="friend-item">
+        <div class="avatar" style="background:#2196F3">K</div>
+        <div class="friend-info">
+          <div class="fn">Katherine Webster</div>
+        </div>
+        <div class="friend-time">10 min atrás</div>
+      </div>
+      <div class="friend-item">
+        <div class="avatar" style="background:#FF5722">A</div>
+        <div class="friend-info">
+          <div class="fn">Avalon Carey</div>
+        </div>
+        <div class="friend-time">10 min atrás</div>
+      </div>
+
+      <button class="btn-new-chat">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Nova Conversa
+      </button>
+    </div>
+
+    <!-- Tarefas pendentes -->
+    <div class="tasks-card">
+      <div class="section-title">Tarefas Próximas</div>
+
+      <div class="task-item">
+        <div class="task-icon" style="background:#6C63FF">A</div>
+        <div class="task-info">
+          <div class="tn">Algoritmo de Discussão</div>
+          <div class="ts">08:00 – 12:00</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-icon" style="background:#FFC107">M</div>
+        <div class="task-info">
+          <div class="tn">Matemática Fundamental</div>
+          <div class="ts">12:00 – 15:00</div>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-icon" style="background:#4CAF50">H</div>
+        <div class="task-info">
+          <div class="tn">Modificações do DNA</div>
+          <div class="ts">Em andamento</div>
+        </div>
+        <span class="task-status ongoing">Em andamento</span>
+      </div>
+    </div>
+
+  </div><!-- /col-right -->
+
+</div><!-- /main -->
+
 </body>
 </html>
